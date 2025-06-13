@@ -25,6 +25,7 @@ html,body{
     height: 30%;
     background-color: #3f51b5;
     margin: 20px;
+    padding: 20px;
 }
 
 .max-width-height{
@@ -32,3 +33,6 @@ html,body{
     height: 100%;
 }
 
+.box-heading{
+    color:#fdd835; 
+}
