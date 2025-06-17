@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Monthly Rent Tracker</title>
+  <title>A94 Monthly Rent Tracker</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     table { border-collapse: collapse; width: 100%; }
@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-  <h2>Monthly Rent Tracker (2 Flats per Floor)</h2>
+  <h2>A94 Monthly Rent Tracker</h2>
 
   <label for="yearSelect">Select Year:</label>
   <select id="yearSelect" onchange="renderTable()">
@@ -31,7 +31,6 @@
   <form id="rentForm">
     <div id="tableContainer"></div>
     <br>
-    <button type="button" onclick="checkRentStatus()">Check Missing Rent</button>
     <button type="button" onclick="exportToCSV()">Export to CSV</button>
   </form>
 
@@ -63,7 +62,7 @@
             <td>Floor ${floor}</td>
             <td>Flat ${flat}</td>`;
           for (let m = 0; m < 12; m++) {
-            html += `<td><input type="checkbox" id="f${floor}fl${flat}m${m}" onchange="updateColor(this)" /></td>`;
+            html += `<td><input type="text" id="f${floor}fl${flat}m${m}" onchange="updateColor(this)" /></td>`;
           }
           html += `</tr>`;
         }
@@ -74,8 +73,8 @@
       updateAllColors();
     }
 
-    function updateColor(cb) {
-      cb.parentElement.className = cb.checked ? "received" : "not-received";
+    function updateColor(inputBox) {
+      inputBox.parentElement.className = inputBox.value!="" && !isNaN(inputBox.value) ? "received" : "not-received";
     }
 
     function updateAllColors() {
@@ -86,35 +85,6 @@
             if (cb) updateColor(cb);
           }
         }
-      }
-    }
-
-    function checkRentStatus() {
-      const statusList = document.getElementById("statusList");
-      statusList.innerHTML = "";
-      const year = document.getElementById("yearSelect").value;
-      let allReceived = true;
-
-      for (let floor = 1; floor <= 3; floor++) {
-        for (let flat = 1; flat <= 2; flat++) {
-          for (let m = 0; m < 12; m++) {
-            const cb = document.getElementById(`f${floor}fl${flat}m${m}`);
-            if (!cb.checked) {
-              const li = document.createElement("li");
-              li.textContent = `❌ Rent not received: Floor ${floor}, Flat ${flat}, ${months[m]} ${year}`;
-              li.style.color = "red";
-              statusList.appendChild(li);
-              allReceived = false;
-            }
-          }
-        }
-      }
-
-      if (allReceived) {
-        const li = document.createElement("li");
-        li.textContent = "✅ All rent received for all flats, floors, and months!";
-        li.style.color = "green";
-        statusList.appendChild(li);
       }
     }
 
