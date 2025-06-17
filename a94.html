@@ -62,7 +62,7 @@
             <td>Floor ${floor}</td>
             <td>Flat ${flat}</td>`;
           for (let m = 0; m < 12; m++) {
-            html += `<td><input type="text" id="f${floor}fl${flat}m${m}" onchange="updateColor(this)" /></td>`;
+            html += `<td><input type="text" id="f${floor}fl${flat}m${m}" size="5" onchange="updateColor(this)" /></td>`;
           }
           html += `</tr>`;
         }
