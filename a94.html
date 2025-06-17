@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -5,17 +6,17 @@
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }
+    th, td { border: 1px solid #aaa; padding: 6px; text-align: center; }
     th { background-color: #f0f0f0; }
-    input[type="checkbox"] { transform: scale(1.3); cursor: pointer; }
-    .received { background-color: #d4edda; }     /* green */
-    .not-received { background-color: #f8d7da; } /* red */
+    input[type="checkbox"] { transform: scale(1.2); cursor: pointer; }
+    .received { background-color: #d4edda; }
+    .not-received { background-color: #f8d7da; }
     .summary { margin-top: 20px; }
-    select, button { padding: 6px 10px; font-size: 14px; margin-right: 10px; }
+    select, button { padding: 6px 10px; font-size: 14px; margin: 10px 5px 10px 0; }
   </style>
 </head>
 <body>
-  <h2>Monthly Rent Tracker</h2>
+  <h2>Monthly Rent Tracker (2 Flats per Floor)</h2>
 
   <label for="yearSelect">Select Year:</label>
   <select id="yearSelect" onchange="renderTable()">
@@ -44,26 +45,32 @@
 
     function renderTable() {
       const container = document.getElementById("tableContainer");
-      container.innerHTML = `
+      let html = `
         <table id="rentTable">
           <thead>
             <tr>
               <th>Floor</th>
+              <th>Flat</th>
               ${months.map(m => `<th>${m}</th>`).join('')}
             </tr>
           </thead>
           <tbody>
-            ${[1,2,3].map(floor => `
-              <tr>
-                <td>Floor ${floor}</td>
-                ${months.map((_, i) => `
-                  <td><input type="checkbox" id="f${floor}m${i}" onchange="updateColor(this)" /></td>
-                `).join('')}
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
       `;
+
+      for (let floor = 1; floor <= 3; floor++) {
+        for (let flat = 1; flat <= 2; flat++) {
+          html += `<tr>
+            <td>Floor ${floor}</td>
+            <td>Flat ${flat}</td>`;
+          for (let m = 0; m < 12; m++) {
+            html += `<td><input type="checkbox" id="f${floor}fl${flat}m${m}" onchange="updateColor(this)" /></td>`;
+          }
+          html += `</tr>`;
+        }
+      }
+
+      html += `</tbody></table>`;
+      container.innerHTML = html;
       updateAllColors();
     }
 
@@ -73,9 +80,11 @@
 
     function updateAllColors() {
       for (let floor = 1; floor <= 3; floor++) {
-        for (let m = 0; m < 12; m++) {
-          const cb = document.getElementById(`f${floor}m${m}`);
-          if (cb) updateColor(cb);
+        for (let flat = 1; flat <= 2; flat++) {
+          for (let m = 0; m < 12; m++) {
+            const cb = document.getElementById(`f${floor}fl${flat}m${m}`);
+            if (cb) updateColor(cb);
+          }
         }
       }
     }
@@ -87,21 +96,23 @@
       let allReceived = true;
 
       for (let floor = 1; floor <= 3; floor++) {
-        for (let m = 0; m < 12; m++) {
-          const cb = document.getElementById(`f${floor}m${m}`);
-          if (!cb.checked) {
-            const li = document.createElement("li");
-            li.textContent = `❌ Rent not received: Floor ${floor}, ${months[m]} ${year}`;
-            li.style.color = "red";
-            statusList.appendChild(li);
-            allReceived = false;
+        for (let flat = 1; flat <= 2; flat++) {
+          for (let m = 0; m < 12; m++) {
+            const cb = document.getElementById(`f${floor}fl${flat}m${m}`);
+            if (!cb.checked) {
+              const li = document.createElement("li");
+              li.textContent = `❌ Rent not received: Floor ${floor}, Flat ${flat}, ${months[m]} ${year}`;
+              li.style.color = "red";
+              statusList.appendChild(li);
+              allReceived = false;
+            }
           }
         }
       }
 
       if (allReceived) {
         const li = document.createElement("li");
-        li.textContent = "✅ All rent received for all floors and months!";
+        li.textContent = "✅ All rent received for all flats, floors, and months!";
         li.style.color = "green";
         statusList.appendChild(li);
       }
@@ -109,15 +120,17 @@
 
     function exportToCSV() {
       const year = document.getElementById("yearSelect").value;
-      let csv = `Floor,${months.join(",")}\n`;
+      let csv = `Floor,Flat,${months.join(",")}\n`;
 
       for (let floor = 1; floor <= 3; floor++) {
-        let row = `Floor ${floor}`;
-        for (let m = 0; m < 12; m++) {
-          const cb = document.getElementById(`f${floor}m${m}`);
-          row += `,${cb.checked ? "Received" : "Not Received"}`;
+        for (let flat = 1; flat <= 2; flat++) {
+          let row = `Floor ${floor},Flat ${flat}`;
+          for (let m = 0; m < 12; m++) {
+            const cb = document.getElementById(`f${floor}fl${flat}m${m}`);
+            row += `,${cb.checked ? "Received" : "Not Received"}`;
+          }
+          csv += row + "\n";
         }
-        csv += row + "\n";
       }
 
       const blob = new Blob([csv], { type: "text/csv" });
@@ -130,7 +143,6 @@
       document.body.removeChild(link);
     }
 
-    // Initial table render
     renderTable();
   </script>
 </body>
