@@ -34,14 +34,9 @@
     <button type="button" onclick="exportToCSV()">Export to CSV</button>
   </form>
 
-  <div class="summary">
-    <h3>Summary of Missing Rent:</h3>
-    <ul id="statusList"></ul>
-  </div>
-
   <script>
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
+    const sheetURL = "https://script.google.com/macros/s/AKfycbxHZRZX96KLf7qEiBq2s6d14j8uBPW0OFF0U501JcHETB8PE86d64R4eAAoAVmXeVIq/exec";
     function renderTable() {
       const container = document.getElementById("tableContainer");
       let html = `
@@ -62,7 +57,7 @@
             <td>Floor ${floor}</td>
             <td>Flat ${flat}</td>`;
           for (let m = 0; m < 12; m++) {
-            html += `<td><input type="text" id="f${floor}fl${flat}m${m}" size="5" onchange="updateColor(this)" /></td>`;
+            html += `<td><input type="text" id="f${floor}fl${flat}m${m}" size="5" oninput="handleInput(this, ${floor}, ${flat}, '${months[m]}')"/></td>`;
           }
           html += `</tr>`;
         }
@@ -70,7 +65,18 @@
 
       html += `</tbody></table>`;
       container.innerHTML = html;
-      updateAllColors();
+      //updateAllColors();
+      loadRentData();
+    }
+
+    function handleInput(input, floor, flat, month) {
+      updateColor(input);
+      const value = input.value.trim();
+      const year = document.getElementById("yearSelect").value;
+
+      if (value !== "" && !isNaN(value)) {
+        saveRentToSheet(year, month, floor, flat, value);
+      }
     }
 
     function updateColor(inputBox) {
@@ -86,6 +92,32 @@
           }
         }
       }
+    }
+
+    function saveRentToSheet(year, month, floor, flat, amount) {
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({ year, month, floor, flat, amount }),
+        headers: { "Content-Type": "application/json" }
+      }).then(res => res.text()).then(console.log).catch(console.error);
+    }
+
+    function loadRentData() {
+      const year = document.getElementById("yearSelect").value;
+      fetch(scriptURL)
+        .then(res => res.json())
+        .then(rows => {
+          rows.slice(1).forEach(([y, month, f, fl, amt]) => {
+            if (y == year) {
+              const monthIndex = months.indexOf(month);
+              const input = document.getElementById(`f${f}fl${fl}m${monthIndex}`);
+              if (input) {
+                input.value = amt;
+                updateColor(input);
+              }
+            }
+          });
+        });
     }
 
     function exportToCSV() {
