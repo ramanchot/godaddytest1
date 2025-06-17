@@ -1,63 +1,137 @@
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Rent Status Checker</title>
+  <meta charset="UTF-8" />
+  <title>Monthly Rent Tracker</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; max-width: 600px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background-color: #f2f2f2; }
-    input[type="checkbox"] { transform: scale(1.5); }
-    .received { background-color: #d4edda; }
-    .not-received { background-color: #f8d7da; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }
+    th { background-color: #f0f0f0; }
+    input[type="checkbox"] { transform: scale(1.3); cursor: pointer; }
+    .received { background-color: #d4edda; }     /* green */
+    .not-received { background-color: #f8d7da; } /* red */
+    .summary { margin-top: 20px; }
+    select, button { padding: 6px 10px; font-size: 14px; margin-right: 10px; }
   </style>
 </head>
 <body>
-  <h2>Rent Status for 3-Floor House (2 Flats per Floor)</h2>
+  <h2>Monthly Rent Tracker</h2>
+
+  <label for="yearSelect">Select Year:</label>
+  <select id="yearSelect" onchange="renderTable()">
+    <script>
+      const thisYear = new Date().getFullYear();
+      for (let y = thisYear - 2; y <= thisYear + 2; y++) {
+        document.write(`<option value="${y}" ${y === thisYear ? 'selected' : ''}>${y}</option>`);
+      }
+    </script>
+  </select>
+
   <form id="rentForm">
-    <table>
-      <tr>
-        <th>Floor</th>
-        <th>Flat</th>
-        <th>Rent Received?</th>
-      </tr>
-      <!-- Dynamically create rows -->
-      <script>
-        for (let floor = 1; floor <= 3; floor++) {
-          for (let flat = 1; flat <= 2; flat++) {
-            document.write(`
-              <tr>
-                <td>Floor ${floor}</td>
-                <td>Flat ${flat}</td>
-                <td><input type="checkbox" name="rent${floor}${flat}" /></td>
-              </tr>
-            `);
-          }
-        }
-      </script>
-    </table>
+    <div id="tableContainer"></div>
     <br>
-    <button type="button" onclick="showStatus()">Check Rent Status</button>
+    <button type="button" onclick="checkRentStatus()">Check Missing Rent</button>
+    <button type="button" onclick="exportToCSV()">Export to CSV</button>
   </form>
 
-  <h3>Status:</h3>
-  <ul id="statusList"></ul>
+  <div class="summary">
+    <h3>Summary of Missing Rent:</h3>
+    <ul id="statusList"></ul>
+  </div>
 
   <script>
-    function showStatus() {
-      const statusList = document.getElementById('statusList');
-      statusList.innerHTML = '';
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+    function renderTable() {
+      const container = document.getElementById("tableContainer");
+      container.innerHTML = `
+        <table id="rentTable">
+          <thead>
+            <tr>
+              <th>Floor</th>
+              ${months.map(m => `<th>${m}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${[1,2,3].map(floor => `
+              <tr>
+                <td>Floor ${floor}</td>
+                ${months.map((_, i) => `
+                  <td><input type="checkbox" id="f${floor}m${i}" onchange="updateColor(this)" /></td>
+                `).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      updateAllColors();
+    }
+
+    function updateColor(cb) {
+      cb.parentElement.className = cb.checked ? "received" : "not-received";
+    }
+
+    function updateAllColors() {
       for (let floor = 1; floor <= 3; floor++) {
-        for (let flat = 1; flat <= 2; flat++) {
-          const checkbox = document.querySelector(`[name=rent${floor}${flat}]`);
-          const li = document.createElement('li');
-          li.textContent = `Floor ${floor}, Flat ${flat}: ${checkbox.checked ? '✅ Rent Received' : '❌ Rent Not Received'}`;
-          li.style.color = checkbox.checked ? 'green' : 'red';
-          statusList.appendChild(li);
+        for (let m = 0; m < 12; m++) {
+          const cb = document.getElementById(`f${floor}m${m}`);
+          if (cb) updateColor(cb);
         }
       }
     }
+
+    function checkRentStatus() {
+      const statusList = document.getElementById("statusList");
+      statusList.innerHTML = "";
+      const year = document.getElementById("yearSelect").value;
+      let allReceived = true;
+
+      for (let floor = 1; floor <= 3; floor++) {
+        for (let m = 0; m < 12; m++) {
+          const cb = document.getElementById(`f${floor}m${m}`);
+          if (!cb.checked) {
+            const li = document.createElement("li");
+            li.textContent = `❌ Rent not received: Floor ${floor}, ${months[m]} ${year}`;
+            li.style.color = "red";
+            statusList.appendChild(li);
+            allReceived = false;
+          }
+        }
+      }
+
+      if (allReceived) {
+        const li = document.createElement("li");
+        li.textContent = "✅ All rent received for all floors and months!";
+        li.style.color = "green";
+        statusList.appendChild(li);
+      }
+    }
+
+    function exportToCSV() {
+      const year = document.getElementById("yearSelect").value;
+      let csv = `Floor,${months.join(",")}\n`;
+
+      for (let floor = 1; floor <= 3; floor++) {
+        let row = `Floor ${floor}`;
+        for (let m = 0; m < 12; m++) {
+          const cb = document.getElementById(`f${floor}m${m}`);
+          row += `,${cb.checked ? "Received" : "Not Received"}`;
+        }
+        csv += row + "\n";
+      }
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `rent_status_${year}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Initial table render
+    renderTable();
   </script>
 </body>
 </html>
