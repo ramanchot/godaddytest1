@@ -95,7 +95,7 @@
     }
 
     function saveRentToSheet(year, month, floor, flat, amount) {
-      fetch(scriptURL, {
+      fetch(sheetURL, {
         method: "POST",
         body: JSON.stringify({ year, month, floor, flat, amount }),
         headers: { "Content-Type": "application/json" }
