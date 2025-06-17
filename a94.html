@@ -31,7 +31,7 @@
   <form id="rentForm">
     <div id="tableContainer"></div>
     <br>
-    <button type="button" onclick="exportToCSV()">Export to CSV1</button>
+    <button type="button" onclick="exportToCSV()">Export to CSV2</button>
   </form>
 
   <script>
@@ -104,7 +104,7 @@
 
     function loadRentData() {
       const year = document.getElementById("yearSelect").value;
-      fetch(scriptURL)
+      fetch(sheetURL)
         .then(res => res.json())
         .then(rows => {
           rows.slice(1).forEach(([y, month, f, fl, amt]) => {
