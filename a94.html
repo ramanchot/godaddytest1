@@ -31,7 +31,7 @@
   <form id="rentForm">
     <div id="tableContainer"></div>
     <br>
-    <button type="button" onclick="exportToCSV()">Export to CSV4</button>
+    <button type="button" onclick="exportToCSV()">Export to CSV</button>
   </form>
 
   <script>
@@ -95,16 +95,28 @@
     }
 
     function saveRentToSheet(year, month, floor, flat, amount) {
-  const url = `${sheetURL}?year=${year}&month=${month}&floor=${floor}&flat=${flat}&amount=${amount}`;
-  fetch(url)
-  .then(res => {
-    if (!res.ok) throw new Error("Network response not OK");
-    return res.json();  // Only if response is confirmed to be JSON
-  })
-  .then(data => console.log("Saved:", data))
-  .catch(err => console.error("Fetch failed:", err));
+      fetch(sheetURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ year, month, floor, flat, amount })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Network response not OK");
+        return res.text(); // Use .json() only if sure backend sends proper JSON headers
+      })
+      .then(data => {
+        try {
+          const parsed = JSON.parse(data);
+          console.log("Saved:", parsed);
+        } catch {
+          console.log("Saved (raw):", data);
+        }
+      })
+      .catch(err => console.error("Fetch failed:", err));
+    }
 
-}
 
 
     function loadRentData() {
@@ -122,8 +134,10 @@
               }
             }
           });
-        });
+        })
+        .catch(err => console.error("Loading rent failed:", err));
     }
+
 
     function exportToCSV() {
       const year = document.getElementById("yearSelect").value;
