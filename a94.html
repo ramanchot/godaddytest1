@@ -31,7 +31,7 @@
   <form id="rentForm">
     <div id="tableContainer"></div>
     <br>
-    <button type="button" onclick="exportToCSV()">Export to CSV3</button>
+    <button type="button" onclick="exportToCSV()">Export to CSV4</button>
   </form>
 
   <script>
@@ -96,7 +96,14 @@
 
     function saveRentToSheet(year, month, floor, flat, amount) {
   const url = `${sheetURL}?year=${year}&month=${month}&floor=${floor}&flat=${flat}&amount=${amount}`;
-  fetch(url).then(res => res.text()).then(console.log).catch(console.error);
+  fetch(url)
+  .then(res => {
+    if (!res.ok) throw new Error("Network response not OK");
+    return res.json();  // Only if response is confirmed to be JSON
+  })
+  .then(data => console.log("Saved:", data))
+  .catch(err => console.error("Fetch failed:", err));
+
 }
 
 
