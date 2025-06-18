@@ -96,7 +96,7 @@
 
     function saveRentToSheet(year, month, floor, flat, amount) {
       fetch(sheetURL, {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json"
         },
