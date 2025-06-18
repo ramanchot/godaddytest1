@@ -4,12 +4,24 @@
 <title>Contact Form</title>
 <body>
     <div class="contactCard">
-        
+        <form method="POST" autocomplete="off" name="contactForm">
         <h3>Simple Contact Form</h3>
         <input type="text" id="name" placeholder="Your Name" required>
         <input type="email" id="email" placeholder="Your Email" required>
         <textarea id="message" placeholder="Your Message" required></textarea>
-        <button id="submitBtn">Submit</button>
+        <button id="submit">Submit</button>
+        </form>
     </div>
+    <script>
+        const sheetURL ='https://script.google.com/macros/s/AKfycbyln3iD_QZmr5gaycoOhvJfShcVMGTB4O49C_WsW-wTD8udieeCwBon5nfdQuHponnyQQ/exec';
+        const form =document.forms['contactForm'];
+        form.addEventListener('submit', e => {
+        e.preventDefault()
+        fetch(sheetURL,{method:'POST', body: new FormData(form)})
+        .then(response => alert("Submitted Successfully!"))
+        .catch(error => console.error("Error submitting form: " + error.message))
+    }) 
+        
+    </script>
 </body>
 </html>
