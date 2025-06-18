@@ -17,6 +17,18 @@
 </head>
 <body>
   <h2>A94 Monthly Rent Tracker</h2>
+  <!-- Hidden Form to send data using GET -->
+<form id="hiddenForm"
+      action="https://script.google.com/macros/s/AKfycbz6z3N7urMQug2-lpiPvdBNeC61DOtbhpqiGIkL6R5EdK9ifDt0eaptZY8ga2pBXPMS/exec"
+      method="GET"
+      target="_blank"
+      style="display: none;">
+  <input type="hidden" name="year" />
+  <input type="hidden" name="month" />
+  <input type="hidden" name="floor" />
+  <input type="hidden" name="flat" />
+  <input type="hidden" name="amount" />
+</form>
 
   <label for="yearSelect">Select Year:</label>
   <select id="yearSelect" onchange="renderTable()">
@@ -95,20 +107,15 @@
     }
 
     function saveRentToSheet(year, month, floor, flat, amount) {
-        fetch(sheetURL)
-          .then(response => {
-            if (!response.ok) throw new Error("Network response was not OK");
-            return response.json();
-          })
-          .then(data => {
-            console.log("Response from Apps Script:", data);
-            alert("Status: " + data.status);
-          })
-          .catch(error => {
-            console.error("Error:", error);
-            alert("Request failed");
-          });
-    }
+        const form = document.getElementById("hiddenForm");
+        form.year.value = year;
+        form.month.value = month;
+        form.floor.value = floor;
+        form.flat.value = flat;
+        form.amount.value = amount;
+        form.submit(); // submits the form as a GET request
+      }
+
 
 
 
