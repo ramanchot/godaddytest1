@@ -95,26 +95,19 @@
     }
 
     function saveRentToSheet(year, month, floor, flat, amount) {
-      fetch(sheetURL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ year, month, floor, flat, amount })
-      })
-      .then(res => {
-        if (!res.ok) throw new Error("Network response not OK");
-        return res.text(); // Use .json() only if sure backend sends proper JSON headers
-      })
-      .then(data => {
-        try {
-          const parsed = JSON.parse(data);
-          console.log("Saved:", parsed);
-        } catch {
-          console.log("Saved (raw):", data);
-        }
-      })
-      .catch(err => console.error("Fetch failed:", err));
+        fetch(sheetURL)
+          .then(response => {
+            if (!response.ok) throw new Error("Network response was not OK");
+            return response.json();
+          })
+          .then(data => {
+            console.log("Response from Apps Script:", data);
+            alert("Status: " + data.status);
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            alert("Request failed");
+          });
     }
 
 
