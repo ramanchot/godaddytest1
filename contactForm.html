@@ -1,26 +1,29 @@
 <html>
-<link rel="stylesheet" href="contactForm.css">
-
-<title>Contact Form</title>
-<body>
-    <div class="container">
-        <form class="contactCard" method="POST" autocomplete="off" name="contactForm">
-        <h3>Contact Us</h3>
-        <input type="text" id="name" placeholder="Your Name" name="name" required>
-        <input type="email" id="email" placeholder="Your Email" name="email" required>
-        <button id="submit">Submit</button>
-        </form>
-    </div>
-    <script>
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbyln3iD_QZmr5gaycoOhvJfShcVMGTB4O49C_WsW-wTD8udieeCwBon5nfdQuHponnyQQ/exec'
-            const form = document.forms['contactForm']
-          
-            form.addEventListener('submit', e => {
-              e.preventDefault()
-              fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => alert("Thanks for Contacting us..! We Will Contact You Soon..."))
-                .catch(error => console.error('Error!', error.message))
-            })
-          </script>
-</body>
+    <head>
+        <link rel="stylesheet" href="contactForm.css">
+        <title>Contact Form</title>
+    </head>
+    <body>
+        <div class="container">
+            <form class="contactCard" method="POST" autocomplete="off" name="contactForm">
+            <h3>Contact Us</h3>
+            <input type="text" id="name" placeholder="Your Name" name="name" required>
+            <input type="email" id="email" placeholder="Your Email" name="email" required>
+            <button id="submit"><span>Submit</span></button>
+            </form>
+        </div>
+        
+        <script>
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbyln3iD_QZmr5gaycoOhvJfShcVMGTB4O49C_WsW-wTD8udieeCwBon5nfdQuHponnyQQ/exec'
+                const form = document.forms['contactForm']
+            
+                form.addEventListener('submit', e => {
+                e.preventDefault()
+                fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                    .then(response => alert("Thanks for Contacting us..! We Will Contact You Soon..."))
+                    .catch(error => console.error('Error!', error.message))
+                })
+            </script>
+    </body>
+        
 </html>
