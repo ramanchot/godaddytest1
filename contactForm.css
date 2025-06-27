@@ -1,3 +1,7 @@
+body{
+    background-color: black;
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
 .container{
     display: flex;
     justify-content: center;
@@ -5,7 +9,7 @@
     height: 100%;
 }
 .contactCard {
-  background-color: black;
+  background-color: white;
   height: 200px;
   width: 300px;
   padding: 50px;
@@ -13,10 +17,21 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
 }
 h3{
-    color: white;
+    position: relative;
+}
+h3::after{
+   background: linear-gradient(45deg, purple, blue);
+   content: '';
+   position: absolute;
+   height: 3px;
+   width: 100%;
+   bottom:0;
+   left: 0;
+
+   color: brown;
 }
 
 /* Outer button with gradient border using background-clip trick */
@@ -24,12 +39,14 @@ button {
   position: relative;
   padding: 0px 15px;
   margin: 14px;
-  border: 2px solid transparent;
+  border: .5px solid transparent;
+  box-shadow: 0 0 10px 1px blue ,
+              0 0 1px 1px purple;
   border-radius: 100px;
   background: linear-gradient(white, white) padding-box,
               linear-gradient(45deg, purple, blue) border-box;
   color: black;
-  font-size: 16px;
+  font-size: 12px;
   z-index: 1;
 }
 button:hover{
