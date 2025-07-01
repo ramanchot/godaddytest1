@@ -57,6 +57,7 @@ button:hover{
 
 .weather-glass{
   display: flex;
+  justify-content: space-around;
   border-radius: 10px;
   padding: 0px 15px;
   margin: 14px;
@@ -70,8 +71,8 @@ button:hover{
 
 .weather-icons {
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
+  font-size: 30px;
 }
 
 

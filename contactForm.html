@@ -7,16 +7,12 @@
     </head>
     <body>
         <div class="weather-glass">
-            <h1>Weather Today</h1>
-            <div class="weather-icons">
-                
-                <i class="wi wi-day-sunny"></i>       <!-- Sun -->
-                <i class="wi wi-cloudy"></i>          <!-- Cloudy -->
-                <i class="wi wi-rain"></i>            <!-- Rainy -->
-                <i class="wi wi-day-cloudy"></i>      <!-- Partly cloudy -->
-            </div>   
+            <div class="weather-description">
+                <h4>Weather Today</h4>
+            </div>
+            <div class="weather-icons"></div>   
         </div>
-        <button id="checkWeather" onclick="checkWeather()">Check Weather</button>
+        
         <div class="container">
             <form class="contactCard" method="POST" autocomplete="off" name="contactForm">
             <h3>Contact Us</h3>
@@ -36,21 +32,32 @@
                     .then(response => alert("Thanks for Contacting us..! We Will Contact You Soon..."))
                     .catch(error => console.error('Error!', error.message))
                 })
-
+                window.onload = checkWeather;
                 function checkWeather() {
-                    const weatherGlass = document.querySelector('.weather-glass');
-                    // weatherGlass.style.display = 'block';
+                    const weatherDescription = document.querySelector('.weather-description');
+                    const weatherIcon = document.querySelector('.weather-icons');
+                    
                     
                     fetch('https://api.openweathermap.org/data/2.5/weather?q=Delhi&appid=5df3ecbd4ba69dd38155557d8620c6c4')
                         .then(response => response.json())
                         .then(data => {
                            
                             const weatherInfo = `Temperature: ${(data.main.temp-273).toFixed(2)}°C, Condition: ${data.weather[0].description}`;
-                            weatherGlass.innerHTML = `<h1>${weatherInfo}</h1>`;
+                            weatherDescription.innerHTML = `<h4>${weatherInfo}</h4>`;
+                            const condition = data.weather[0].description.toLowerCase();
+                            if(condition.includes('clear')) {
+                                weatherIcon.innerHTML += '<i class="wi wi-day-sunny"></i>';
+                            } else if(condition.includes('cloud')) {
+                                weatherIcon.innerHTML += '<i class="wi wi-cloudy"></i>';
+                            } else if(condition.includes('rain')) {
+                                weatherIcon.innerHTML += '<i class="wi wi-rain"></i>';
+                            } else {
+                                weatherIcon.innerHTML += '<i class="wi wi-day-cloudy"></i>';
+                            }
                         })
                         .catch(error => {
                             console.error('Error fetching weather data:', error);
-                            weatherGlass.innerHTML = '<h1>Error fetching weather data</h1>';
+                            weatherDescription.innerHTML = '<h1>Error fetching weather data</h1>';
                         });
                 }
             </script>
