@@ -1,5 +1,5 @@
 body{
-    background-color: #0b0c12;
+    background-color: #0b0c12f2;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin:0;
     padding: 0;
@@ -49,7 +49,15 @@ a{
     color: white;
     font-size: 15px;
 }
-
+.aboutMe{
+    background-color: black;
+    margin: 70px;
+    padding: 100px;
+    border:2px solid transparent;
+    border-radius: 5px;
+    font-size: 30px;
+    text-transform: uppercase;
+}
 strong{
     padding : 8px;
     border-radius: 10px;
@@ -58,9 +66,6 @@ strong{
     background-color: rgb(0, 0, 255);
 }
 
-.content{
-    height :100vh;
-}
 footer{
     box-shadow: 0 0 500px 1px rgb(33, 31, 31);
     display: flex;
@@ -136,6 +141,7 @@ h1{
 }
 
 .scroll-container-languages {
+      border-top: 15px solid black;
       overflow: hidden;
       white-space: nowrap;
     }
@@ -150,4 +156,5 @@ h1{
 
     .scroll-content-languages img{
         height: 100px;
+        padding: 10px 80px 10px 0;   
     }
