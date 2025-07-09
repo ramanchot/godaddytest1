@@ -59,7 +59,7 @@ strong{
 }
 
 .content{
-    height :61vh;
+    height :100vh;
 }
 footer{
     box-shadow: 0 0 500px 1px rgb(33, 31, 31);
@@ -70,6 +70,7 @@ footer{
     padding: 10px;
     justify-content: center;
     text-align: center; 
+    flex-wrap: nowrap;
 }
 
 .footer_section{
@@ -127,3 +128,26 @@ button#submit:hover {
     color: black;
     border: none;
 }
+
+h1{
+    
+    border: 2px solid red;
+    
+}
+
+.scroll-container-languages {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .scroll-content-languages {
+      display: inline-block;
+      animation: scroll 10s linear infinite;
+    }
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .scroll-content-languages img{
+        height: 100px;
+    }
