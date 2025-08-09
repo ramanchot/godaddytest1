@@ -1,0 +1,120 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <link rel="stylesheet" href="lagazebo-home.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <title>La Gazebo | Home</title>
+    </head>
+    <body>
+        <header class ="headerBar">
+            <strong class="topbar_left"><i class="fa fa-map-location"></i> Sector-85, Faridabad</strong>
+            <strong class="topbar_right"><i class="fa fa-phone"></i> +919999932391   &nbsp;<i class="fa fa-envelope"></i> lagazebo@gmail.com</strong>
+            <h1 class="heading">LA GAZEBO</h1>
+            <hr class="lineseperator">
+            <ul class="navigation_menu">
+                <li><span>Home</span></li>
+                <li><span>Menu</span></li>
+                <li><span>Reservations</span></li>
+                <li><span>Order Online</span></li>
+                <li><span>About Us</span></li>
+            </ul>
+        </header>
+        <div class="section1">
+            <div class="section1_text">
+                <h2>Welcome to La Gazebo</h2>
+                <p>Your favorite place for delicious food and great ambiance.</p>
+            </div>
+        </div>
+        <div class="section2">
+            <div class="menu_heading"><h1>Our Menu</h1></div>
+            <div class="menu_container">
+                <ul class="menu_categories">
+                    <li><span>STARTERS</span></li>
+                    <li><span>MAIN COURSE</span></li>
+                    <li><span>DESSERTS</span></li>
+                    <li><span>BEVERAGES</span></li>
+                 </ul>
+            </div>
+            <div class="menu_categories_items_container">
+                <!-- /*menu item desc*/ -->
+                <div class="menu_categories_starters font-size-1_5"> 
+                    <div class="menu-item-and-price">
+                        <strong class="font-black">Some Dish Name</strong> 
+                        <span class="font-black">  ₹ 2000</span>
+                    </div>
+                    <div class="menu-item-description">
+                        <span class="font-gray font-size-1">Adrak, pyaz, lassan</span>
+                    </div>
+                    <hr class="lineseperator">
+                    <div class="menu-item-and-price">
+                        <strong class="font-black">Some Dish Name</strong> 
+                        <span class="font-black">  ₹ 2000</span>
+                    </div>
+                    <div class="menu-item-description">
+                        <span class="font-gray font-size-1">Adrak, pyaz, lassan</span>
+                    </div>
+                    <hr class="lineseperator">
+                    <div class="menu-item-and-price">
+                        <strong class="font-black">Some Dish Name</strong> 
+                        <span class="font-black">  ₹ 2000</span>
+                    </div>
+                    <div class="menu-item-description">
+                        <span class="font-gray font-size-1">Adrak, pyaz, lassan</span>
+                    </div>
+                    <hr class="lineseperator">
+                    <div class="menu-item-and-price">
+                        <strong class="font-black">Some Dish Name</strong> 
+                        <span class="font-black">  ₹ 2000</span>
+                    </div>
+                    <div class="menu-item-description">
+                        <span class="font-gray font-size-1">Adrak, pyaz, lassan</span>
+                    </div>   
+                    <hr class="lineseperator">     
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="footer_container">
+                
+                <div class="footer_aboutus flex1">
+                    <div class="footer_aboutus_heading font-size-1_5"><strong>About Us</strong> </div>
+                    <p class="font-size-1">La Gazebo is a family restaurant that offers a wide variety of cuisines, from Indian to Continental. Our chefs use the freshest ingredients to create mouth-watering dishes that will leave you wanting more.</p>
+                </div>
+                <div class="footer_workinghours flex1">
+                    <div class="footer_workinghours_heading font-size-1_5"><strong> Working Hours </strong></div>
+                    <p class="font-size-1">Mon - Fri: 10:00 - 23:00 </p>
+                    <p class="font-size-1">Sat - Sun: 9:00 - 00:00 </p>
+                </div>
+                <div class="footer_address flex1">
+                    <div class="footer_address_heading font-size-1_5"><strong>Address</strong></div>
+                    <p class="font-size-1">Sector-85, Faridabad, Haryana, India</p>
+                </div>
+                <div class="footer_contactus flex1">
+                    <div class="footer_contactus_heading font-size-1_5"><strong>Contact Us</strong></div>
+                    <p class="font-size-1">For reservations, please call us or email us at the above address.</p>
+                    <p class="font-size-1">Phone: +919999932391</p>
+                    <p class="font-size-1">Email: lagazebo@gmail.com</p>
+                    <p class="font-size-1">Follow us on social media for updates and special offers!</p>
+                </div>
+            </div>
+        </footer>
+    </body>
+    <script>
+  let lastScrollTop = 0;
+  const header = document.querySelector('.headerBar');
+
+  window.addEventListener('scroll', function() {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > lastScrollTop) {
+      // Scrolling down
+      header.classList.add('hide');
+    } else {
+      // Scrolling up
+      header.classList.remove('hide');
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Avoid negative
+  });
+</script>
+    </html>

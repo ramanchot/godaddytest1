@@ -1,0 +1,202 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    color: whitesmoke;
+}
+
+.headerBar {
+    position: fixed;
+    width: 100%;
+    content: '';
+    top: 0;
+    left: 0;
+    background-color: black;
+    padding: 12px 0 1px;
+}
+
+.headerBar {
+    transition: transform 0.3s ease;
+}
+
+.headerBar.hide {
+    transform: translateY(-100%);
+}
+
+.topbar_left {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    padding: 8px;
+}
+
+.topbar_right {
+    justify-content: center;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 8px;
+}
+
+.heading {
+    text-align: center;
+}
+
+.navigation_menu {
+    padding: 0;
+    width: 100%;
+    justify-content: space-around;
+    display: flex;
+    list-style: none;
+}
+
+.navigation_menu li {
+    padding: 8px 12px;
+    /* Add some padding for space around the line */
+}
+
+.navigation_menu li:hover {
+    cursor: pointer;
+    color: rgba(255, 0, 0, 0.652);
+}
+
+.section1 {
+    padding-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+}
+
+
+
+.section1_text {
+    text-align: center;
+    width: 500px;
+    height: auto;
+    font-size: 50px;
+}
+
+
+.section2 {
+    padding: 10px;
+    /*to cover the margin of h2*/
+    background-color: white;
+    color: black;
+    height: 100vh;
+}
+
+.menu_heading {
+    text-align: center;
+}
+
+.menu_heading h1 {
+    display: inline-block;
+    color: black;
+    border-bottom: 3px solid orange;
+}
+
+.menu_container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.menu_categories span {
+    color: black;
+}
+
+.menu_categories {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    gap: 50px;
+    text-wrap: nowrap;
+    padding-bottom: 100px;
+    /* Add padding to create space at the bottom */
+}
+
+.menu_categories li {
+    padding: 0 0 5px 0;
+    border-bottom: 2px solid transparent;
+}
+
+.menu_categories li:hover {
+    padding: 0 0 5px 0;
+    border-bottom: 2px solid orange;
+}
+
+.menu_categories_items_container {
+    padding-left: 15vw;
+    padding-right: 15vw;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.menu-item-and-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+footer {
+    background-color: black;
+    color: white;
+    width: 100%;
+    min-height: 200px;
+    overflow: auto;
+}
+
+.footer_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 30px;
+    line-height: 1.5;
+
+}
+
+.footer_workinghours {
+    text-wrap: nowrap;
+}
+
+
+/* ==================== Common Classes ==================== */
+
+
+.font-black {
+    color: black;
+}
+
+.font-gray {
+    color: gray;
+}
+
+.font-size-1_5 {
+    font-size: 1.5rem;
+}
+
+.font-size-1 {
+    font-size: 1rem;
+}
+
+.lineseperator {
+    border: none;
+    border-top: .1px solid #ccc;
+    margin: 8px 0;
+}
+
+.flex1 {
+    flex: 1;
+}
