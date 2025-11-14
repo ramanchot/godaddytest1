@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MongoDB Insert Demo</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 30px;
+    }
+    .container {
+      width: 350px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    #message {
+      margin-top: 15px;
+      font-size: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Insert Data into MongoDB</h2>
+
+    <input id="name" placeholder="Enter Name" />
+    <input id="age" placeholder="Enter Age" type="number" />
+
+    <button onclick="submitData()">Submit</button>
+
+    <div id="message"></div>
+  </div>
+
+  <script>
+    async function submitData() {
+      const name = document.getElementById("name").value.trim();
+      const age = document.getElementById("age").value.trim();
+      const message = document.getElementById("message");
+
+      if (!name || !age) {
+        message.textContent = "Please fill all fields.";
+        message.style.color = "red";
+        return;
+      }
+
+      message.textContent = "Submitting...";
+      message.style.color = "black";
+
+      try {
+        const res = await fetch("/api", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, age }),
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          message.textContent = "Data inserted successfully! ID: " + result.insertedId;
+          message.style.color = "green";
+        } else {
+          message.textContent = "Error: " + result.error;
+          message.style.color = "red";
+        }
+
+      } catch (err) {
+        message.textContent = "Request failed: " + err.message;
+        message.style.color = "red";
+      }
+    }
+  </script>
+
+</body>
+</html>
