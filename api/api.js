@@ -1,3 +1,4 @@
+// /api/api.js
 import { MongoClient } from "mongodb";
 
 let client;
