@@ -12,7 +12,7 @@ clientPromise = global._mongoClientPromise;
 
 export default async function handler(req, res) {
   // ---- Secure CORS ----
-  const allowedOrigin = "https://your-custom-domain.com"; // replace with your domain
+  const allowedOrigin = "https://ramanchot.com"; // replace with your domain
   res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
