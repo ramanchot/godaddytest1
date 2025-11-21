@@ -3,44 +3,161 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Property Manager (Professional UI)</title>
+  <title>Property Manager (Compact UI)</title>
+
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
-    .container { max-width: 1100px; margin: auto; padding: 30px; }
-    h1 { margin-bottom: 25px; font-size: 28px; font-weight: bold; }
-    .box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .property-item { padding: 15px; background: #eef1f4; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
-    .property-item:hover { background: #dbe1e7; }
-    .tenant-card { background: #fafafa; padding: 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #ddd; }
-    .btn { padding: 10px 15px; background: #0275d8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 6px; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f4f6f8; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    .container { 
+      max-width: 1100px; 
+      margin: auto; 
+      padding: 30px; 
+    }
+
+    h1 { 
+      margin-bottom: 25px; 
+      font-size: 28px; 
+      font-weight: bold; 
+    }
+
+    .box { 
+      background: white; 
+      padding: 20px; 
+      border-radius: 12px; 
+      margin-bottom: 25px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+    }
+
+    /* Compact layout */
+    .row { 
+      display: flex; 
+      gap: 15px; 
+      margin-bottom: 20px; 
+      flex-wrap: wrap;
+    }
+
+    .row select { 
+      padding: 10px; 
+      border-radius: 6px; 
+      border: 1px solid #ccc; 
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 15px; 
+    }
+
+    th, td { 
+      padding: 12px; 
+      border-bottom: 1px solid #ddd; 
+      text-align: left; 
+    }
+
+    th { 
+      background: #eef1f4; 
+      font-weight: bold;
+    }
+
+    input.amount-input { 
+      width: 120px; 
+      padding: 8px; 
+      border: 1px solid #ccc; 
+      border-radius: 6px; 
+    }
+
+    .btn { 
+      padding: 8px 12px; 
+      background: #0275d8; 
+      color: white; 
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      font-size: 13px; 
+    }
+
     .btn:hover { background: #025aa5; }
-    .btn-danger { background: #d9534f; }
-    .btn-danger:hover { background: #c9302c; }
-    input, select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-top: 8px; margin-bottom: 12px; }
-    .month-selector { display: flex; gap: 10px; margin-bottom: 20px; }
-    .record-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 12px; }
+
+    .accordion { 
+      cursor: pointer; 
+      padding: 12px; 
+      background: #ddd; 
+      border-radius: 6px; 
+      margin-top: 10px; 
+      font-weight: bold; 
+      user-select: none;
+    }
+
+    .accordion-content { 
+      display: none; 
+      background: #fafafa; 
+      padding: 12px; 
+      border-radius: 6px; 
+      margin-top: 5px; 
+    }
+
+    input, select { 
+      width: 100%; 
+      padding: 10px; 
+      border-radius: 6px; 
+      border: 1px solid #ccc; 
+      margin-top: 8px; 
+      margin-bottom: 12px; 
+    }
   </style>
 </head>
+
 <body>
 <div class="container">
-  <h1>Property Manager Dashboard</h1>
+  
+  <h1>Property Manager</h1>
 
-  <!-- PROPERTY LIST -->
+  <!-- Property Selector -->
   <div class="box">
-    <h2>Properties</h2>
-    <div id="propertyList"></div>
-    <h3>Add New Property</h3>
-    <input id="propertyName" placeholder="Property Name">
-    <button class="btn" onclick="addProperty()">Add Property</button>
+    <h3>Select Property</h3>
+    <select id="propertyDropdown" onchange="selectPropertyFromDropdown()"></select>
   </div>
 
-  <!-- TENANTS SECTION -->
-  <div id="tenantSection" class="box" style="display:none;">
-    <h2 id="tenantTitle">Tenants</h2>
-    <div id="tenantList"></div>
-    <h3>Add Tenant</h3>
+  <!-- Month Selector -->
+  <div class="box" id="monthSection" style="display:none;">
+    <h3>Month / Year</h3>
+
+    <div class="row">
+      <select id="monthSelect">
+        <option value="1">Jan</option><option value="2">Feb</option>
+        <option value="3">Mar</option><option value="4">Apr</option>
+        <option value="5">May</option><option value="6">Jun</option>
+        <option value="7">Jul</option><option value="8">Aug</option>
+        <option value="9">Sep</option><option value="10">Oct</option>
+        <option value="11">Nov</option><option value="12">Dec</option>
+      </select>
+
+      <select id="yearSelect"></select>
+
+      <button class="btn" onclick="loadMonthlyRecords()">Load</button>
+      <button class="btn" onclick="createAllRecords()">Create Records</button>
+    </div>
+
+    <div id="monthlyTableSection"></div>
+  </div>
+
+  <!-- Add Property (Collapsible) -->
+  <div class="accordion" onclick="toggleAccordion('propAcc')">+ Add Property</div>
+  <div id="propAcc" class="accordion-content">
+    <input id="propertyName" placeholder="Property Name">
+    <button class="btn" onclick="addProperty()">Add</button>
+  </div>
+
+  <!-- Add Tenant (Collapsible) -->
+  <div class="accordion" onclick="toggleAccordion('tenantAcc')">+ Add Tenant</div>
+  <div id="tenantAcc" class="accordion-content">
     <input id="tenantName" placeholder="Tenant Name">
-    <input id="tenantRent" type="number" placeholder="Monthly Rent Amount">
+    <input id="tenantRent" type="number" placeholder="Rent Amount">
     <select id="electricityCycle">
       <option value="1">Electricity every 1 month</option>
       <option value="2">Every 2 months</option>
@@ -49,24 +166,6 @@
     <button class="btn" onclick="addTenant()">Add Tenant</button>
   </div>
 
-  <!-- MONTHLY RECORDS SECTION -->
-  <div id="monthSection" class="box" style="display:none;">
-    <h2>Monthly Records</h2>
-    <div class="month-selector">
-      <select id="monthSelect">
-        <option value="1">January</option><option value="2">February</option>
-        <option value="3">March</option><option value="4">April</option>
-        <option value="5">May</option><option value="6">June</option>
-        <option value="7">July</option><option value="8">August</option>
-        <option value="9">September</option><option value="10">October</option>
-        <option value="11">November</option><option value="12">December</option>
-      </select>
-      <select id="yearSelect"></select>
-    </div>
-    <button class="btn" onclick="loadMonthlyRecords()">Load Records</button>
-    <button class="btn" onclick="addMonthlyRecordsForAll()">Create Records for All Tenants</button>
-    <div id="monthlyList"></div>
-  </div>
 </div>
 
 <script>
@@ -224,3 +323,5 @@ async function updateAmountReceived(id, rentAmount) {
 /* Initialize */
 loadProperties();
 </script>
+</body>
+</html>
