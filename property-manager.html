@@ -151,13 +151,13 @@
 
 <script>
 let selectedProperty = null;
-let selectedPropertyName = "";
 
 /* Populate Year Dropdown */
 (function loadYears() {
   const current = new Date().getFullYear();
   let html = "";
-  for (let y = current - 3; y <= current + 2; y++) html += `<option value="${y}">${y}</option>`;
+  for (let y = current - 3; y <= current + 3; y++)
+    html += `<option value='${y}'>${y}</option>`;
   document.getElementById("yearSelect").innerHTML = html;
 })();
 
@@ -165,12 +165,11 @@ let selectedPropertyName = "";
 async function loadProperties() {
   const res = await fetch("/api/getProperties");
   const list = await res.json();
-
   let html = "";
-  list.forEach(p => {
-    html += `<div class='property-item' onclick="selectProperty('${p._id}', '${p.name}')">${p.name}</div>`;
-  });
-
+  list.forEach(
+    (p) =>
+      (html += `<div class='property-item' onclick="selectProperty('${p._id}', '${p.name}')">${p.name}</div>`)
+  );
   document.getElementById("propertyList").innerHTML = html;
 }
 
@@ -178,13 +177,11 @@ async function loadProperties() {
 async function addProperty() {
   const name = document.getElementById("propertyName").value.trim();
   if (!name) return alert("Enter property name");
-
   await fetch("/api/addProperty", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name })
+    body: JSON.stringify({ name }),
   });
-
   document.getElementById("propertyName").value = "";
   loadProperties();
 }
@@ -192,12 +189,9 @@ async function addProperty() {
 /* Select Property */
 async function selectProperty(id, name) {
   selectedProperty = id;
-  selectedPropertyName = name;
-
   document.getElementById("tenantSection").style.display = "block";
   document.getElementById("monthSection").style.display = "block";
   document.getElementById("tenantTitle").innerText = `Tenants for ${name}`;
-
   loadTenants();
 }
 
@@ -205,9 +199,8 @@ async function selectProperty(id, name) {
 async function loadTenants() {
   const res = await fetch(`/api/getTenants?propertyId=${selectedProperty}`);
   const list = await res.json();
-
   let html = "";
-  list.forEach(t => {
+  list.forEach((t) => {
     html += `
       <div class='tenant-card'>
         <b>${t.name}</b><br>
@@ -216,7 +209,6 @@ async function loadTenants() {
         <button class='btn-danger btn' onclick="deleteTenant('${t._id}')">Delete</button>
       </div>`;
   });
-
   document.getElementById("tenantList").innerHTML = html;
 }
 
@@ -225,7 +217,6 @@ async function addTenant() {
   const name = document.getElementById("tenantName").value.trim();
   const rent = document.getElementById("tenantRent").value.trim();
   const cycle = document.getElementById("electricityCycle").value;
-
   if (!name || !rent) return alert("Fill all fields");
 
   await fetch("/api/addTenant", {
@@ -235,13 +226,12 @@ async function addTenant() {
       propertyId: selectedProperty,
       name,
       rentAmount: rent,
-      electricityBillMonthCycle: cycle
-    })
+      electricityBillMonthCycle: cycle,
+    }),
   });
 
   document.getElementById("tenantName").value = "";
   document.getElementById("tenantRent").value = "";
-
   loadTenants();
 }
 
@@ -260,7 +250,7 @@ async function addMonthlyRecordsForAll() {
   await fetch("/api/addMonthlyRecordBatch", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ propertyId: selectedProperty, month, year })
+    body: JSON.stringify({ propertyId: selectedProperty, month, year }),
   });
 
   loadMonthlyRecords();
@@ -271,14 +261,26 @@ async function loadMonthlyRecords() {
   const month = Number(document.getElementById("monthSelect").value);
   const year = Number(document.getElementById("yearSelect").value);
 
-  const res = await fetch(`/api/getMonthlyRecords?propertyId=${selectedProperty}&month=${month}&year=${year}`);
+  const res = await fetch(
+    `/api/getMonthlyRecords?propertyId=${selectedProperty}&month=${month}&year=${year}`
+  );
   const list = await res.json();
 
   let html = "";
-  list.forEach(r => {
+  list.forEach((r) => {
     html += `
       <div class='record-card'>
         <b>${r.tenantName}</b><br>
-        Rent: ₹${r.rentAmount} — ${r.rentReceived ? "Received" : "Not Received"}<br>
+        Rent: ₹${r.rentAmount} — ${
+      r.rentReceived ? "Received" : "Not Received"
+    }<br>
       </div>`;
   });
+
+  document.getElementById("monthlyList").innerHTML = html;
+}
+
+/* Initialize */
+loadProperties();
+</script>
+
