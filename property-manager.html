@@ -1,133 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Property Manager (Professional UI)</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 30px;
-    }
-
-    h1 {
-      margin-bottom: 25px;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .property-item {
-      padding: 15px;
-      background: #eef1f4;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .property-item:hover {
-      background: #dbe1e7;
-    }
-
-    .tenant-card {
-      background: #fafafa;
-      padding: 15px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-    }
-
-    .btn {
-      padding: 10px 15px;
-      background: #0275d8;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-right: 6px;
-    }
+    body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
+    .container { max-width: 1100px; margin: auto; padding: 30px; }
+    h1 { margin-bottom: 25px; font-size: 28px; font-weight: bold; }
+    .box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .property-item { padding: 15px; background: #eef1f4; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+    .property-item:hover { background: #dbe1e7; }
+    .tenant-card { background: #fafafa; padding: 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #ddd; }
+    .btn { padding: 10px 15px; background: #0275d8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 6px; }
     .btn:hover { background: #025aa5; }
-
     .btn-danger { background: #d9534f; }
     .btn-danger:hover { background: #c9302c; }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-top: 8px;
-      margin-bottom: 12px;
-    }
-
-    .month-selector {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .record-card {
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      margin-bottom: 12px;
-    }
+    input, select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-top: 8px; margin-bottom: 12px; }
+    .month-selector { display: flex; gap: 10px; margin-bottom: 20px; }
+    .record-card { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 12px; }
   </style>
 </head>
 <body>
 <div class="container">
-
   <h1>Property Manager Dashboard</h1>
 
   <!-- PROPERTY LIST -->
   <div class="box">
     <h2>Properties</h2>
     <div id="propertyList"></div>
-
     <h3>Add New Property</h3>
     <input id="propertyName" placeholder="Property Name">
     <button class="btn" onclick="addProperty()">Add Property</button>
   </div>
 
-
   <!-- TENANTS SECTION -->
   <div id="tenantSection" class="box" style="display:none;">
     <h2 id="tenantTitle">Tenants</h2>
     <div id="tenantList"></div>
-
     <h3>Add Tenant</h3>
     <input id="tenantName" placeholder="Tenant Name">
     <input id="tenantRent" type="number" placeholder="Monthly Rent Amount">
-
     <select id="electricityCycle">
       <option value="1">Electricity every 1 month</option>
       <option value="2">Every 2 months</option>
       <option value="3">Every 3 months</option>
     </select>
-
     <button class="btn" onclick="addTenant()">Add Tenant</button>
   </div>
-
 
   <!-- MONTHLY RECORDS SECTION -->
   <div id="monthSection" class="box" style="display:none;">
     <h2>Monthly Records</h2>
-
     <div class="month-selector">
       <select id="monthSelect">
         <option value="1">January</option><option value="2">February</option>
@@ -137,87 +61,75 @@
         <option value="9">September</option><option value="10">October</option>
         <option value="11">November</option><option value="12">December</option>
       </select>
-
       <select id="yearSelect"></select>
     </div>
-
     <button class="btn" onclick="loadMonthlyRecords()">Load Records</button>
     <button class="btn" onclick="addMonthlyRecordsForAll()">Create Records for All Tenants</button>
-
     <div id="monthlyList"></div>
   </div>
-
 </div>
 
 <script>
 let selectedProperty = null;
 
-/* Populate Year Dropdown */
+/* Toggle Accordion */
+function toggleAccordion(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === "block" ? "none" : "block";
+}
+
+/* Load Years */
 (function loadYears() {
-  const current = new Date().getFullYear();
+  const y = new Date().getFullYear();
   let html = "";
-  for (let y = current - 3; y <= current + 3; y++)
-    html += `<option value='${y}'>${y}</option>`;
+  for (let yr = y - 2; yr <= y + 3; yr++)
+    html += `<option value='${yr}'>${yr}</option>`;
   document.getElementById("yearSelect").innerHTML = html;
 })();
 
-/* Load Properties */
+/* Load Properties into dropdown */
 async function loadProperties() {
   const res = await fetch("/api/getProperties");
-  const list = await res.json();
-  let html = "";
-  list.forEach(
-    (p) =>
-      (html += `<div class='property-item' onclick="selectProperty('${p._id}', '${p.name}')">${p.name}</div>`)
+  const props = await res.json();
+
+  let html = `<option value=''>Select</option>`;
+  props.forEach(
+    (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
   );
-  document.getElementById("propertyList").innerHTML = html;
+
+  document.getElementById("propertyDropdown").innerHTML = html;
+}
+
+/* When property selected */
+async function selectPropertyFromDropdown() {
+  selectedProperty = document.getElementById("propertyDropdown").value;
+  if (!selectedProperty) return;
+
+  document.getElementById("monthSection").style.display = "block";
 }
 
 /* Add Property */
 async function addProperty() {
   const name = document.getElementById("propertyName").value.trim();
-  if (!name) return alert("Enter property name");
+  if (!name) return alert("Enter name");
+
   await fetch("/api/addProperty", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name }),
   });
-  document.getElementById("propertyName").value = "";
+
   loadProperties();
-}
-
-/* Select Property */
-async function selectProperty(id, name) {
-  selectedProperty = id;
-  document.getElementById("tenantSection").style.display = "block";
-  document.getElementById("monthSection").style.display = "block";
-  document.getElementById("tenantTitle").innerText = `Tenants for ${name}`;
-  loadTenants();
-}
-
-/* Load Tenants */
-async function loadTenants() {
-  const res = await fetch(`/api/getTenants?propertyId=${selectedProperty}`);
-  const list = await res.json();
-  let html = "";
-  list.forEach((t) => {
-    html += `
-      <div class='tenant-card'>
-        <b>${t.name}</b><br>
-        Rent: ₹${t.rentAmount}<br>
-        Electricity Cycle: ${t.electricityBillMonthCycle} months<br><br>
-        <button class='btn-danger btn' onclick="deleteTenant('${t._id}')">Delete</button>
-      </div>`;
-  });
-  document.getElementById("tenantList").innerHTML = html;
+  document.getElementById("propertyName").value = "";
 }
 
 /* Add Tenant */
 async function addTenant() {
-  const name = document.getElementById("tenantName").value.trim();
-  const rent = document.getElementById("tenantRent").value.trim();
+  const name = document.getElementById("tenantName").value;
+  const rent = document.getElementById("tenantRent").value;
   const cycle = document.getElementById("electricityCycle").value;
-  if (!name || !rent) return alert("Fill all fields");
+
+  if (!selectedProperty) return alert("Select property first");
 
   await fetch("/api/addTenant", {
     method: "POST",
@@ -232,18 +144,10 @@ async function addTenant() {
 
   document.getElementById("tenantName").value = "";
   document.getElementById("tenantRent").value = "";
-  loadTenants();
 }
 
-/* Delete Tenant */
-async function deleteTenant(id) {
-  if (!confirm("Delete tenant?")) return;
-  await fetch(`/api/deleteTenant?id=${id}`, { method: "DELETE" });
-  loadTenants();
-}
-
-/* Create Monthly Records for ALL tenants */
-async function addMonthlyRecordsForAll() {
+/* Create ALL records for month */
+async function createAllRecords() {
   const month = Number(document.getElementById("monthSelect").value);
   const year = Number(document.getElementById("yearSelect").value);
 
@@ -256,7 +160,7 @@ async function addMonthlyRecordsForAll() {
   loadMonthlyRecords();
 }
 
-/* Load Monthly Records */
+/* Load Monthly Records (table view) */
 async function loadMonthlyRecords() {
   const month = Number(document.getElementById("monthSelect").value);
   const year = Number(document.getElementById("yearSelect").value);
@@ -266,21 +170,57 @@ async function loadMonthlyRecords() {
   );
   const list = await res.json();
 
-  let html = "";
+  let html = `
+    <table>
+      <tr>
+        <th>Tenant</th>
+        <th>Rent</th>
+        <th>Amount Received</th>
+        <th>Status</th>
+        <th>Update</th>
+      </tr>`;
+
   list.forEach((r) => {
+    let status = "Not Received";
+    if (r.amountReceived >= r.rentAmount) status = "Full";
+    else if (r.amountReceived > 0) status = "Partial";
+
     html += `
-      <div class='record-card'>
-        <b>${r.tenantName}</b><br>
-        Rent: ₹${r.rentAmount} — ${
-      r.rentReceived ? "Received" : "Not Received"
-    }<br>
-      </div>`;
+      <tr>
+        <td>${r.tenantName}</td>
+        <td>₹${r.rentAmount}</td>
+        <td><input class='amount-input' id='amt_${r._id}' value='${
+      r.amountReceived || 0
+    }'></td>
+        <td>${status}</td>
+        <td><button class='btn' onclick="updateAmountReceived('${
+          r._id
+        }','${r.rentAmount}')">Save</button></td>
+      </tr>`;
   });
 
-  document.getElementById("monthlyList").innerHTML = html;
+  html += `</table>`;
+
+  document.getElementById("monthlyTableSection").innerHTML = html;
+}
+
+/* Update Actual Amount Received */
+async function updateAmountReceived(id, rentAmount) {
+  const val = Number(document.getElementById("amt_" + id).value);
+
+  await fetch("/api/updateMonthlyRecord", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id,
+      amountReceived: val,
+      rentAmount: Number(rentAmount),
+    }),
+  });
+
+  loadMonthlyRecords();
 }
 
 /* Initialize */
 loadProperties();
 </script>
-
