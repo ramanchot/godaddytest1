@@ -81,3 +81,217 @@
 
   <!-- PROPERTY LIST -->
   <div class="card">
+    <div class="section-title">Properties</div>
+
+    <div id="propertyList"></div>
+
+    <h3>Add Property</h3>
+    <input id="propertyName" placeholder="Property Name">
+    <button onclick="addProperty()">Add Property</button>
+  </div>
+
+
+  <!-- TENANT MANAGER -->
+  <div class="card" id="tenantSection" style="display:none;">
+    <div class="section-title" id="tenantHeader">Tenants</div>
+
+    <div id="tenantList"></div>
+
+    <h3>Add Tenant</h3>
+    <input id="tenantName" placeholder="Tenant Name">
+    <input id="tenantRent" type="number" placeholder="Monthly Rent Amount">
+    <select id="electricityCycle">
+      <option value="1">Electricity every 1 month</option>
+      <option value="2">Electricity every 2 months</option>
+      <option value="3">Electricity every 3 months</option>
+    </select>
+
+    <button onclick="addTenant()">Add Tenant</button>
+  </div>
+
+
+  <!-- MONTHLY RECORDS -->
+  <div class="card" id="monthSection" style="display:none;">
+    <div class="section-title" id="monthHeader">Monthly Records</div>
+
+    <button onclick="openAddMonthlyRecord()">Add Monthly Record</button>
+    <div id="monthList"></div>
+  </div>
+
+</div>
+
+
+
+<script>
+let selectedProperty = null;
+let selectedPropertyName = "";
+let selectedTenantId = null;
+
+
+/* ============================
+   LOAD PROPERTIES
+   ============================ */
+async function loadProperties() {
+  const res = await fetch("/api/getProperties");
+  const list = await res.json();
+
+  let html = "";
+  list.forEach(p => {
+    html += `
+      <div class="property-item" onclick="selectProperty('${p._id}', '${p.name}')">
+        ${p.name}
+      </div>
+    `;
+  });
+
+  document.getElementById("propertyList").innerHTML = html;
+}
+
+
+/* ============================
+   ADD PROPERTY
+   ============================ */
+async function addProperty() {
+  const name = document.getElementById("propertyName").value.trim();
+  if (!name) return alert("Enter property name");
+
+  await fetch("/api/addProperty", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name })
+  });
+
+  document.getElementById("propertyName").value = "";
+  loadProperties();
+}
+
+
+/* ============================
+   SELECT PROPERTY
+   ============================ */
+async function selectProperty(id, name) {
+  selectedProperty = id;
+  selectedPropertyName = name;
+
+  document.getElementById("tenantSection").style.display = "block";
+  document.getElementById("monthSection").style.display = "block";
+
+  document.getElementById("tenantHeader").innerText = "Tenants for: " + name;
+  document.getElementById("monthHeader").innerText = "Monthly Records — " + name;
+
+  loadTenants();
+  loadMonthlyRecords();
+}
+
+
+/* ============================
+   LOAD TENANTS
+   ============================ */
+async function loadTenants() {
+  const res = await fetch("/api/getTenants?propertyId=" + selectedProperty);
+  const tenants = await res.json();
+
+  let html = "";
+  tenants.forEach(t => {
+    html += `
+      <div class="tenant-card">
+        <b>${t.name}</b><br>
+        Rent: ₹${t.rentAmount}<br>
+        Electricity Cycle: ${t.electricityBillMonthCycle} months<br><br>
+
+        <button class="delete-btn" onclick="deleteTenant('${t._id}')">Delete Tenant</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("tenantList").innerHTML = html;
+}
+
+
+/* ============================
+   ADD TENANT
+   ============================ */
+async function addTenant() {
+  const name = document.getElementById("tenantName").value.trim();
+  const rent = document.getElementById("tenantRent").value.trim();
+  const cycle = document.getElementById("electricityCycle").value;
+
+  if (!name || !rent) return alert("Fill all fields");
+
+  await fetch("/api/addTenant", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      rentAmount: rent,
+      electricityBillMonthCycle: cycle,
+      propertyId: selectedProperty
+    })
+  });
+
+  document.getElementById("tenantName").value = "";
+  document.getElementById("tenantRent").value = "";
+
+  loadTenants();
+}
+
+
+/* ============================
+   DELETE TENANT
+   ============================ */
+async function deleteTenant(id) {
+  if (!confirm("Delete tenant?")) return;
+
+  await fetch("/api/deleteTenant?id=" + id, { method: "DELETE" });
+  loadTenants();
+}
+
+
+/* ============================
+   MONTHLY RECORDS
+   ============================ */
+async function loadMonthlyRecords() {
+  const res = await fetch("/api/getMonthlyRecords?propertyId=" + selectedProperty);
+  const list = await res.json();
+
+  let html = "";
+  list.forEach(r => {
+    html += `
+      <div class="tenant-card">
+        <b>${r.month}/${r.year}</b><br>
+        Rent: ₹${r.rentAmount} — ${r.rentReceived ? "Received" : "Not Received"}
+        <br>
+        Electricity: ${r.electricityBill ? "₹" + r.electricityBill : "No Bill"}
+      </div>
+    `;
+  });
+
+  document.getElementById("monthList").innerHTML = html;
+}
+
+
+/* ============================
+   ADD MONTHLY RECORD
+   ============================ */
+function openAddMonthlyRecord() {
+  const month = prompt("Enter month (1-12):");
+  const year = prompt("Enter year (e.g. 2025):");
+
+  if (!month || !year) return;
+
+  fetch("/api/addMonthlyRecord", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      propertyId: selectedProperty,
+      month: Number(month),
+      year: Number(year)
+    })
+  }).then(() => loadMonthlyRecords());
+}
+
+
+loadProperties();
+</script>
+</body>
+</html>
