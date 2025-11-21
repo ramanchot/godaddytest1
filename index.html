@@ -78,7 +78,7 @@
       message.style.color = "black";
 
       try {
-        const res = await fetch("https://godaddytest1-egj55wcxj-ramanchots-projects.vercel.app/api/api", {
+        const res = await fetch("/api/api", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, age }),
