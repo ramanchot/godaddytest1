@@ -3,22 +3,48 @@ const client = new MongoClient(process.env.MONGODB_URI);
 const clientPromise = client.connect();
 
 export default async function handler(req, res) {
-  let body = "";
-  for await (const c of req) body += c;
-  const data = JSON.parse(body);
+  try {
+    let body = "";
+    for await (const c of req) body += c;
+    const data = JSON.parse(body);
 
-  const db = (await clientPromise).db("RamanDB");
+    const { propertyId, month, year } = data;
 
-  const record = {
-    propertyId: data.propertyId,
-    month: data.month,
-    year: data.year,
-    rentAmount: 0,
-    rentReceived: false,
-    electricityBill: null,
-    electricityPaid: false
-  };
+    const db = (await clientPromise).db("RamanDB");
 
-  const result = await db.collection("rentRecords").insertOne(record);
-  res.json({ success: true, id: result.insertedId });
+    // 1. Get all tenants under property
+    const tenants = await db.collection("tenants").find({ propertyId }).toArray();
+
+    let created = 0;
+
+    // 2. Loop through all tenants and create monthly record if missing
+    for (const t of tenants) {
+      const exists = await db.collection("rentRecords").findOne({
+        tenantId: t._id.toString(),
+        month,
+        year
+      });
+
+      if (!exists) {
+        await db.collection("rentRecords").insertOne({
+          tenantId: t._id.toString(),
+          tenantName: t.name,
+          propertyId,
+          month,
+          year,
+          rentAmount: t.rentAmount,
+          rentReceived: false,
+          electricityBill: null,
+          electricityPaid: false
+        });
+
+        created++;
+      }
+    }
+
+    res.json({ success: true, created });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 }
