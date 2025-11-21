@@ -58,6 +58,9 @@
     <input id="age" placeholder="Enter Age" type="number" />
 
     <button onclick="submitData()">Submit</button>
+    <button onclick="fetchData()">Fetch Data</button>
+
+<div id="output"></div>
 
     <div id="message"></div>
   </div>
@@ -99,6 +102,38 @@
         message.style.color = "red";
       }
     }
+
+    async function fetchData() {
+  const output = document.getElementById("output");
+  output.innerHTML = "Loading...";
+
+  try {
+    const res = await fetch("/api/getData");
+    const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      output.innerHTML = "Error fetching data.";
+      return;
+    }
+
+    // Render result nicely
+    output.innerHTML = `
+      <h3>Fetched Records (${data.length}):</h3>
+      <ul>
+        ${data.map(d => `
+          <li>
+            <strong>Name:</strong> ${d.name} 
+            | <strong>Age:</strong> ${d.age}
+            | <strong>ID:</strong> ${d._id}
+          </li>
+        `).join("")}
+      </ul>
+    `;
+
+  } catch (err) {
+    output.innerHTML = "Request failed: " + err.message;
+  }
+}
   </script>
 
 </body>
