@@ -14,16 +14,30 @@ async function addProperty() {
 }
 /* Load Properties into dropdown */
 async function loadProperties() {
-  const res = await fetch("/api/getProperties");
+ // const res = await fetch("/api/getProperties");
   const props = await res.json();
+  /*[
+    {
+        "_id": "692033a92f3bb2bcbfa56122",
+        "name": "A94"
+    },
+    {
+        "_id": "692034032f3bb2bcbfa56123",
+        "name": "Mirzapur"
+    },
+    {
+        "_id": "692fe81ac0bd468df852ec4e",
+        "name": "ABC"
+    }
+]*/
+  
 
-  //let html = `<option value=''>Select</option>`;
+ let html = ``;
   props.forEach(
-    //(p) => (html += `<input type='text' value='${p._id}'>${p.name}</input>`)
-    alert(`ID: ${p._id} Name: ${p.name}`)
+    (p) => (html += `<li type='text' value='${p._id}'>${p.name}</li>`)
   );
 
- // document.getElementById("propertyDropdown").innerHTML = html;
+  document.getElementById("propertiesList").innerHTML = html;
 }
 
 /* Load Properties into dropdown */
