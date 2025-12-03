@@ -9,6 +9,6 @@ async function addProperty() {
     body: JSON.stringify({ name }),
   });
 
-  loadProperties();
+  alert("Property added");
   document.getElementById("propertyName").value = "";
 }
