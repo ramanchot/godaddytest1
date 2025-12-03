@@ -14,7 +14,7 @@ async function addProperty() {
 }
 /* Load Properties into dropdown */
 async function loadProperties() {
- // const res = await fetch("/api/getProperties");
+  const res = await fetch("/api/getProperties");
   const props = await res.json();
   /*[
     {
