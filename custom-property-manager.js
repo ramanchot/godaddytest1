@@ -1,6 +1,7 @@
 loadPropertiesForAddTenant();
 
-async function loadPropertiesInitial() {
+/* Populate property into select box */
+async function loadPropertiesForAddTenant() {
     const res = await fetch("/api/getProperties");
     const props = await res.json();
     let html = `<option value=''>Select</option>`;
