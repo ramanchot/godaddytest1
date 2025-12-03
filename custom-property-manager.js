@@ -56,3 +56,11 @@ async function addTenant() {
     alert("Tenant added");
     document.getElementById("tenantName").value = "";
 }
+
+async function onMonthSelected(value){
+    if (!value) return;
+
+        const [year, month] = value.split("-");
+
+        alert("Year: " + year + "\nMonth: " + month);
+}
