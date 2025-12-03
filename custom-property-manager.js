@@ -1,3 +1,14 @@
+loadPropertiesForAddTenant();
+
+async function loadPropertiesInitial() {
+    const res = await fetch("/api/getProperties");
+    const props = await res.json();
+    let html = `<option value=''>Select</option>`;
+    props.forEach(
+        (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
+    );
+    document.getElementById("propertySelectForTenant").innerHTML = html;}
+
 /* Add Property */
 async function addProperty() {
   const name = document.getElementById("propertyName").value.trim();
@@ -12,7 +23,8 @@ async function addProperty() {
   alert("Property added");
   document.getElementById("propertyName").value = "";
 }
-/* Load Properties into dropdown */
+
+/* Load Properties */
 async function loadProperties() {
   const res = await fetch("/api/getProperties");
   const props = await res.json();
@@ -38,4 +50,28 @@ async function loadProperties() {
   );
 
   document.getElementById("propertiesList").innerHTML = html;
+}
+
+/* Add Tenant */
+async function addTenant() {
+  const name = document.getElementById("tenantName").value;
+  const selectedProperty = document.getElementById("propertyDropdown").value;
+  //const rent = document.getElementById("tenantRent").value;
+  //const cycle = document.getElementById("electricityCycle").value;
+
+  //if (!selectedProperty) return alert("Select property first");
+
+  await fetch("/api/addTenant", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      propertyId: selectedProperty,
+      name,
+      //rentAmount: rent,
+      //electricityBillMonthCycle: cycle,
+    }),
+  });
+
+  document.getElementById("tenantName").value = "";
+  //document.getElementById("tenantRent").value = "";
 }

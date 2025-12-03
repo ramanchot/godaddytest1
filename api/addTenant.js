@@ -13,8 +13,8 @@ export default async function handler(req, res) {
     const tenant = {
       propertyId: data.propertyId,
       name: data.name,
-      rentAmount: Number(data.rentAmount),
-      electricityBillMonthCycle: Number(data.electricityBillMonthCycle)
+      //rentAmount: Number(data.rentAmount),
+      //electricityBillMonthCycle: Number(data.electricityBillMonthCycle)
     };
 
     const result = await db.collection("tenants").insertOne(tenant);
