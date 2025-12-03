@@ -57,6 +57,8 @@ async function loadProperties() {
 async function addTenant() {
   const name = document.getElementById("tenantName").value;
   const selectedProperty = document.getElementById("propertySelectForTenant").value;
+  if (!name) return alert("Enter name");
+  if (!selectedProperty) return alert("Select a property");
   //const rent = document.getElementById("tenantRent").value;
   //const cycle = document.getElementById("electricityCycle").value;
 
@@ -72,7 +74,7 @@ async function addTenant() {
       //electricityBillMonthCycle: cycle,
     }),
   });
-
+  alert("Tenant added");
   document.getElementById("tenantName").value = "";
   //document.getElementById("tenantRent").value = "";
 }
