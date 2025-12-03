@@ -56,7 +56,7 @@ async function loadProperties() {
 /* Add Tenant */
 async function addTenant() {
   const name = document.getElementById("tenantName").value;
-  const selectedProperty = document.getElementById("propertyDropdown").value;
+  const selectedProperty = document.getElementById("propertySelectForTenant").value;
   //const rent = document.getElementById("tenantRent").value;
   //const cycle = document.getElementById("electricityCycle").value;
 

@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     const tenant = {
       propertyId: data.propertyId,
-      name: data.name,
+      name: data.name
       //rentAmount: Number(data.rentAmount),
       //electricityBillMonthCycle: Number(data.electricityBillMonthCycle)
     };
