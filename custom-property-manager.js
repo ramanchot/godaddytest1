@@ -39,16 +39,3 @@ async function loadProperties() {
 
   document.getElementById("propertiesList").innerHTML = html;
 }
-
-/* Load Properties into dropdown */
-async function loadProperties1() {
-  const res = await fetch("/api/getProperties");
-  const props = await res.json();
-
-  let html = `<option value=''>Select</option>`;
-  props.forEach(
-    (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
-  );
-
-  document.getElementById("propertyDropdown").innerHTML = html;
-}
