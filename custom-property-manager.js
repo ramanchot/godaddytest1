@@ -8,73 +8,51 @@ async function loadPropertiesForAddTenant() {
     props.forEach(
         (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
     );
-    document.getElementById("propertySelectForTenant").innerHTML = html;}
+    document.getElementById("propertySelectForTenant").innerHTML = html;
+}
 
 /* Add Property */
 async function addProperty() {
-  const name = document.getElementById("propertyName").value.trim();
-  if (!name) return alert("Enter name");
+    const name = document.getElementById("propertyName").value.trim();
+    if (!name) return alert("Enter Property name");
 
-  await fetch("/api/addProperty", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name }),
-  });
+    await fetch("/api/addProperty", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+    });
 
-  alert("Property added");
-  document.getElementById("propertyName").value = "";
+    alert("Property added");
+    document.getElementById("propertyName").value = "";
 }
 
 /* Load Properties */
 async function loadProperties() {
-  const res = await fetch("/api/getProperties");
-  const props = await res.json();
-  /*[
-    {
-        "_id": "692033a92f3bb2bcbfa56122",
-        "name": "A94"
-    },
-    {
-        "_id": "692034032f3bb2bcbfa56123",
-        "name": "Mirzapur"
-    },
-    {
-        "_id": "692fe81ac0bd468df852ec4e",
-        "name": "ABC"
-    }
-]*/
-  
+    const res = await fetch("/api/getProperties");
+    const props = await res.json();
+    let html = ``;
+    props.forEach(
+        (p) => (html += `<li type='text' value='${p._id}'>${p.name}</li>`)
+    );
 
- let html = ``;
-  props.forEach(
-    (p) => (html += `<li type='text' value='${p._id}'>${p.name}</li>`)
-  );
-
-  document.getElementById("propertiesList").innerHTML = html;
+    document.getElementById("propertiesList").innerHTML = html;
 }
 
 /* Add Tenant */
 async function addTenant() {
-  const name = document.getElementById("tenantName").value;
-  const selectedProperty = document.getElementById("propertySelectForTenant").value;
-  if (!name) return alert("Enter name");
-  if (!selectedProperty) return alert("Select a property");
-  //const rent = document.getElementById("tenantRent").value;
-  //const cycle = document.getElementById("electricityCycle").value;
+    const name = document.getElementById("tenantName").value;
+    const selectedProperty = document.getElementById("propertySelectForTenant").value;
+    if (!name) return alert("Enter Tenant name");
+    if (!selectedProperty) return alert("Select a property");
 
-  //if (!selectedProperty) return alert("Select property first");
-
-  await fetch("/api/addTenant", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      propertyId: selectedProperty,
-      name,
-      //rentAmount: rent,
-      //electricityBillMonthCycle: cycle,
-    }),
-  });
-  alert("Tenant added");
-  document.getElementById("tenantName").value = "";
-  //document.getElementById("tenantRent").value = "";
+    await fetch("/api/addTenant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            propertyId: selectedProperty,
+            name
+        }),
+    });
+    alert("Tenant added");
+    document.getElementById("tenantName").value = "";
 }
