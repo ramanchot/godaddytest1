@@ -61,8 +61,6 @@ async function onMonthSelected(value){
     if (!value) return;
 
         const [year, month] = value.split("-");
-
-        alert("Year: " + year + "\nMonth: " + month);
         const res = await fetch(`/api/getRentRecordList?month=${month}&year=${year}`);
         const props = await res.json();
         let html = ``;
@@ -73,7 +71,7 @@ async function onMonthSelected(value){
                 <td>${p.year}</td>
                 <td><input type="number" value="${p.rentAmount}" /></td>
                 <td>${p.rentReceived}</td>
-                <td><a onclick="updateRentRecord('${p._id}', this)">Update</a></td>
+                <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
                 </tr>`)
         );
 
