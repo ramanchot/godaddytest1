@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     const result = await db.collection("rentRecords").updateOne({
          _id: new ObjectId(data.id),
-         $set: { rentReceived: data.rentReceived }
+         $set: { rentAmount: data.rentAmount }
     });
 
     res.json({ success: true, matched: result.matchedCount,
