@@ -74,7 +74,3 @@ async function onMonthSelected(value){
 
     
 }
-
-/*async function getRentRecordList() {
-    
-}*/
