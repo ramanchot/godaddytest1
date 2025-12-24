@@ -66,11 +66,11 @@ async function onMonthSelected(value){
 }
 
 async function getRentRecordList() {
-    const res = await fetch("/api/getProperties");
+    const res = await fetch("/api/getRentRecordList");
     const props = await res.json();
     let html = ``;
     props.forEach(
-        (p) => (html += `<li type='text' value='${p._id}'>${p.name}</li>`)
+        (p) => (html += `<li type='text' value='${p.tenantName}'>${p.tenantName}</li>`)
     );
 
     document.getElementById("rentRecordList").innerHTML = html;
