@@ -64,3 +64,14 @@ async function onMonthSelected(value){
 
         alert("Year: " + year + "\nMonth: " + month);
 }
+
+async function getRentRecordList() {
+    const res = await fetch("/api/getProperties");
+    const props = await res.json();
+    let html = ``;
+    props.forEach(
+        (p) => (html += `<li type='text' value='${p._id}'>${p.name}</li>`)
+    );
+
+    document.getElementById("rentRecordList").innerHTML = html;
+}
