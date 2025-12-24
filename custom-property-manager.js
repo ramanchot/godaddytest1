@@ -63,15 +63,18 @@ async function onMonthSelected(value){
         const [year, month] = value.split("-");
 
         alert("Year: " + year + "\nMonth: " + month);
+        const res = await fetch(`/api/getRentRecordList?month=${month}&year=${year}`);
+        const props = await res.json();
+        let html = ``;
+        props.forEach(
+            (p) => (html += `<li type='text' value='${p.tenantName}'>${p.tenantName}</li>`)
+        );
+
+        document.getElementById("rentRecordList").innerHTML = html;
+
+    
 }
 
-async function getRentRecordList() {
-    const res = await fetch("/api/getRentRecordList");
-    const props = await res.json();
-    let html = ``;
-    props.forEach(
-        (p) => (html += `<li type='text' value='${p.tenantName}'>${p.tenantName}</li>`)
-    );
-
-    document.getElementById("rentRecordList").innerHTML = html;
-}
+/*async function getRentRecordList() {
+    
+}*/
