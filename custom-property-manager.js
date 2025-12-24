@@ -67,7 +67,13 @@ async function onMonthSelected(value){
         const props = await res.json();
         let html = ``;
         props.forEach(
-            (p) => (html += `<tr><td>${p.tenantName}</td><td>${p.rent}</td><td>${p.month}</td><td>${p.year}</td><td>${p.rentAmount}</td><td>${p.rentReceived}</td></tr>`)
+            (p) => (html += `<tr>
+                <td>${p.tenantName}</td>
+                <td>${p.month}</td>
+                <td>${p.year}</td>
+                <td>${p.rentAmount}</td>
+                <td>${p.rentReceived}</td>
+                </tr>`)
         );
 
         document.getElementById("rentRecordList").innerHTML = html;    
