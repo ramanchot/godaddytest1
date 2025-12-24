@@ -20,7 +20,18 @@
     <select id="propertySelectForTenant"></select>
     <button onclick="addTenant()">Add New Tenant</button>
     <h2>Get Property Data for <input type="month" id="periodPicker" onchange="onMonthSelected(this.value)">.</h2>
-    <div id="rentRecordList"></div>
+    <table border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Flat</th>
+          <th>Rent</th>
+          <th>Month</th>
+          <th>Year</th>
+        </tr>
+      </thead>
+      <tbody id="rentRecordList"></tbody>
+</table>
   </div>
     <script src="custom-property-manager.js"></script>
 

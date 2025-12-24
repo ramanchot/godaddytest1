@@ -70,7 +70,5 @@ async function onMonthSelected(value){
             (p) => (html += `<li type='text' value='${p.tenantName}'>${p.tenantName}</li>`)
         );
 
-        document.getElementById("rentRecordList").innerHTML = html;
-
-    
+        document.getElementById("rentRecordList").innerHTML = html;    
 }
