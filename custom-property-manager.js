@@ -72,6 +72,7 @@ async function onMonthSelected(value){
                 <td><input type="number" value="${p.rentAmount}" /></td>
                 <td>${p.rentReceived}</td>
                 <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
+                <td>${p._id}</td>
                 </tr>`)
         );
 
