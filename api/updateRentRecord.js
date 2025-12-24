@@ -15,7 +15,8 @@ export default async function handler(req, res) {
          $set: { rentReceived: data.rentReceived }
     });
 
-    res.json({ success: true, id: result.insertedId });
+    res.json({ success: true, matched: result.matchedCount,
+      modified: result.modifiedCount});
 
   } catch (err) {
     res.status(500).json({ error: err.message });
