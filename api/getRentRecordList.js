@@ -4,7 +4,7 @@ const clientPromise = client.connect();
 
 export default async function handler(req, res) {
   try {
-    query={month:1, year:2025};
+    const query={month:2, year:2025};
     const db = (await clientPromise).db("RamanDB");
     const list = await db.collection("rentRecords").find(query).toArray();
     res.json(list);
