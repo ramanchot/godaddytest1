@@ -11,8 +11,8 @@ export default async function handler(req, res) {
     const db = (await clientPromise).db("RamanDB");
 
     const result = await db.collection("rentRecords").updateOne({
-         id: data.id,
-         rentRecieved: data.rentReceived
+         _id: data.id,
+         $set: { rentReceived: data.rentReceived }
     });
 
     res.json({ success: true, id: result.insertedId });
