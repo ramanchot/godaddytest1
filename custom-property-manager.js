@@ -79,3 +79,16 @@ async function onMonthSelected(value){
 
         document.getElementById("rentRecordList").innerHTML = html;    
 }
+
+async function  updateRentRecord(id, element){
+    const tr = element.parentElement.parentElement;
+    const rentAmountRecieved = tr.querySelector("input").value;
+    await fetch("/api/updateRentRecord", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            id,
+            rentAmountRecieved
+        }),
+    });
+}
