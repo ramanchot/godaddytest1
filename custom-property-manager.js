@@ -82,6 +82,7 @@ async function onMonthSelected(value){
 async function  updateRentRecord(id, element){
     const tr = element.parentElement.parentElement;
     const rentAmountRecieved = tr.querySelector("input").value;
+    alert("updateRentRecord");
     await fetch("/api/updateRentRecord", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
