@@ -83,7 +83,7 @@ async function  updateRentRecord(id, element){
     const tr = element.parentElement.parentElement;
     const month = 2;
     const rentAmountRecieved = tr.querySelector("input").value;
-    alert("updateRentRecord");
+    alert(rentAmountRecieved);
     await fetch("/api/updateRentRecord", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
