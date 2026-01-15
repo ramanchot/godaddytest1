@@ -81,14 +81,14 @@ async function onMonthSelected(value){
 
 async function  updateRentRecord(id, element){
     const tr = element.parentElement.parentElement;
-    const id = "69203a4a76b6634868bc8951";
+    const month = 2;
     const rentAmountRecieved = tr.querySelector("input").value;
     alert("updateRentRecord");
     await fetch("/api/updateRentRecord", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            id,
+            month,
             rentAmountRecieved 
         }),
     });
