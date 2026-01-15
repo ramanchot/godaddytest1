@@ -88,7 +88,7 @@ async function  updateRentRecord(id, element){
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             id,
-            rentAmount 
+            rentAmountRecieved 
         }),
     });
 }
