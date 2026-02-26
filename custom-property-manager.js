@@ -13,17 +13,43 @@ async function loadPropertiesForAddTenant() {
 
 /* Add Property */
 async function addProperty() {
+    console.log("Adding property...");
     const name = document.getElementById("propertyName").value.trim();
+    console.log(name);
     if (!name) return alert("Enter Property name");
 
-    await fetch("/api/addProperty", {
+    await fetch("/api/main", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({  action: "ADD_PROPERTY",
+            data : {name}
+        }),
     });
 
     alert("Property added");
     document.getElementById("propertyName").value = "";
+}
+
+/* Add Tenant */
+async function addTenant() {
+    console.log("Adding Tenant...");
+    const name = document.getElementById("tenantName").value;
+    const selectedProperty = document.getElementById("propertySelectForTenant").value;
+    if (!name) return alert("Enter Tenant name");
+    if (!selectedProperty) return alert("Select a property");
+
+    await fetch("/api/main", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({action: "ADD_TENANT",
+            data : {
+                name, 
+                propertyId: selectedProperty
+            }   
+        }),
+    });
+    alert("Tenant added");
+    document.getElementById("tenantName").value = "";
 }
 
 /* Load Properties */
@@ -36,25 +62,6 @@ async function loadProperties() {
     );
 
     document.getElementById("propertiesList").innerHTML = html;
-}
-
-/* Add Tenant */
-async function addTenant() {
-    const name = document.getElementById("tenantName").value;
-    const selectedProperty = document.getElementById("propertySelectForTenant").value;
-    if (!name) return alert("Enter Tenant name");
-    if (!selectedProperty) return alert("Select a property");
-
-    await fetch("/api/addTenant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            propertyId: selectedProperty,
-            name
-        }),
-    });
-    alert("Tenant added");
-    document.getElementById("tenantName").value = "";
 }
 
 async function onMonthSelected(value){
