@@ -68,8 +68,9 @@ async function onMonthSelected(value){
     if (!value) return;
 
         const [year, month] = value.split("-");
-        const res = await fetch(`/api/getRentRecordList?month=${month}&year=${year}`);
+        const res = await fetch(`/api/main?action=GET_RENT_RECORDS_LIST&month=${month}&year=${year}`);
         const props = await res.json();
+        console.log(props);
         let html = ``;
         props.forEach(
             (p) => (html += `<tr>

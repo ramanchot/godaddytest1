@@ -5,9 +5,10 @@ const clientPromise = client.connect();
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Only POST allowed" });
-    }
+    
+    // if (req.method !== "POST") {
+    //   return res.status(405).json({ error: "Only POST allowed" });
+    // }
 
     const db = (await clientPromise).db("RamanDB");
     const { action, data } = req.body;
@@ -29,6 +30,15 @@ export default async function handler(req, res) {
           propertyId: data.propertyId,
           name: data.name
         });
+
+      case "GET_RENT_RECORDS_LIST":
+        const { month, year } = data; 
+        const query = {
+          month: Number(month),
+          year: Number(year)
+        };
+        const rentRecords = await db.collection("rentRecords").find(query).toArray();
+        return res.json(rentRecords);
 
       case "UPDATE_RENT_RECORD":
         console.log("Updating rent record...");
