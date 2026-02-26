@@ -79,7 +79,6 @@ async function onMonthSelected(value){
                 <td><input type="number" value="${p.rentAmount}" /></td>
                 <td>${p.rentReceived}</td>
                 <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
-                <td>${p._id}</td>
                 </tr>`)
         );
 
@@ -90,12 +89,15 @@ async function  updateRentRecord(id, element){
     const tr = element.parentElement.parentElement;
     const rentAmountRecieved = tr.querySelector("input").value;
     alert(id);
-    await fetch("/api/updateRentRecord", {
+    await fetch("/api/main", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            id,
-            rentAmountRecieved 
+            action: "UPDATE_RENT_RECORD",
+            data: {
+                id,
+                rentAmountRecieved 
+            }
         }),
     });
 }

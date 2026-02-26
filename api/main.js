@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const client = new MongoClient(process.env.MONGODB_URI);
 const clientPromise = client.connect();
@@ -30,10 +30,18 @@ export default async function handler(req, res) {
           name: data.name
         });
 
-        return res.json({
-          success: true,
-          id: tenantResult.insertedId
-        });
+      case "UPDATE_RENT_RECORD":
+        console.log("Updating rent record...");
+        console.log(data.id);
+        const rentRecordResult = await db.collection("rentRecords").updateOne(
+          { _id: new ObjectId(data.id) },
+          { $set: { rentAmount: Number(data.rentAmountRecieved) } }
+        );
+
+        //return res.json({
+         // success: true,
+          //id: tenantResult.insertedId
+        //});
 
       default:
         return res.status(400).json({ error: "Invalid action" });
