@@ -68,9 +68,9 @@ async function onMonthSelected(value){
     if (!value) return;
 
         const [year, month] = value.split("-");
+       
         const res = await fetch(`/api/main?action=GET_RENT_RECORDS_LIST&month=${month}&year=${year}`);
         const props = await res.json();
-        console.log(props);
         let html = ``;
         props.forEach(
             (p) => (html += `<tr>
@@ -84,6 +84,7 @@ async function onMonthSelected(value){
         );
 
         document.getElementById("rentRecordList").innerHTML = html;    
+        console.log("method end");
 }
 
 async function  updateRentRecord(id, element){
