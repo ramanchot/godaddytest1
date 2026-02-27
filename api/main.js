@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
       console.log("Handling GET request..."+JSON.stringify(req.query));
       const { action, month, year } = req.query;
-
+      console.log('Property ID:', req.query.propertyId);
       switch (action) {
 
         case "GET_RENT_RECORDS_LIST": {
@@ -21,12 +21,23 @@ export default async function handler(req, res) {
 
           const rentRecords = await db.collection("rentRecords")
             .find({
+              propertyId: req.query.propertyId,
               month: Number(month),
               year: Number(year)
             })
             .toArray();
 
           return res.json(rentRecords);
+        }
+
+        case "GET_TENANTS_LIST": {
+          console.log("Getting tenants list for property..."+req.query.propertyId);
+
+          const tenants = await db.collection("tenants")
+            .find({ propertyId: req.query.propertyId })
+            .toArray();
+
+          return res.json(tenants);
         }
 
         default:
@@ -66,6 +77,12 @@ export default async function handler(req, res) {
           );
 
           return res.json({ success: true });
+        }
+
+        case "INIT_RENT_RECORDS": {
+          console.log("Initializing rent records for current month..."+data.records.length);
+          const result = await db.collection("rentRecords").insertMany(data.records);
+          return res.json({ success: true, message: "Rent records initialization triggered" });
         }
 
         default:

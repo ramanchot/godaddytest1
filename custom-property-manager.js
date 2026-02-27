@@ -9,6 +9,7 @@ async function loadPropertiesForAddTenant() {
         (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
     );
     document.getElementById("propertySelectForTenant").innerHTML = html;
+    document.getElementById("propertySelectForTenant1").innerHTML = html;
 }
 
 /* Add Property */
@@ -68,23 +69,27 @@ async function onMonthSelected(value){
     if (!value) return;
 
         const [year, month] = value.split("-");
-       
-        const res = await fetch(`/api/main?action=GET_RENT_RECORDS_LIST&month=${month}&year=${year}`);
+        const propertyId = document.getElementById("propertySelectForTenant1").value;
+        const res = await fetch(`/api/main?action=GET_RENT_RECORDS_LIST&month=${month}&year=${year}&propertyId=${propertyId}`);
         const props = await res.json();
         let html = ``;
-        props.forEach(
-            (p) => (html += `<tr>
-                <td>${p.tenantName}</td>
-                <td>${p.month}</td>
-                <td>${p.year}</td>
-                <td><input type="number" value="${p.rentAmount}" /></td>
-                <td>${p.rentReceived}</td>
-                <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
-                </tr>`)
-        );
+        if(props.length === 0){
+            html = `<tr><td align="center" colspan="6">No records found for selected month and year.<a href="#" onclick="initialiseRecords()">Click Here to Initialise Records for Current Month</a></td></tr>`;
+        }else{
+                props.forEach(
+                (p) => (html += `<tr>
+                    <td>${p.tenantName}</td>
+                    <td>${p.month}</td>
+                    <td>${p.year}</td>
+                    <td><input type="number" value="${p.rentAmount}" /></td>
+                    <td>${p.rentReceived}</td>
+                    <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
+                    </tr>`)
+            );
+        }
+        
 
         document.getElementById("rentRecordList").innerHTML = html;    
-        console.log("method end");
 }
 
 async function  updateRentRecord(id, element){
@@ -99,6 +104,44 @@ async function  updateRentRecord(id, element){
             data: {
                 id,
                 rentAmountRecieved 
+            }
+        }),
+    });
+}
+
+async function initialiseRecords(){
+    console.log("========Initialising records for current month...=======");
+    const [year, month] = document.getElementById("periodPicker").value.split("-");
+
+    const tenants = await fetch("/api/main?action=GET_TENANTS_LIST&propertyId="+document.getElementById("propertySelectForTenant1").value).then(res => res.json());
+    if(tenants.length === 0){
+        return alert("No tenants found to initialise records");
+    }
+     alert("tenant length"+tenants.length);
+     const recordsToInsert =[];
+    for(const tenant of tenants){
+        tenant.propertyId = document.getElementById("propertySelectForTenant1").value;
+        tenant.name = tenant.name;
+        tenant.rentAmount = 0;
+        recordsToInsert.push({
+            tenantId: tenant._id.toString(),
+            tenantName: tenant.name,
+            propertyId: tenant.propertyId,
+            month: Number(month),
+            year: Number(year),
+            rentAmount: 0,
+            rentReceived: false,
+            electricityBill: 0,
+            electricityPaid: false
+        });
+    }
+    await fetch("/api/main", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: "INIT_RENT_RECORDS",
+            data: {
+                records: recordsToInsert
             }
         }),
     });
