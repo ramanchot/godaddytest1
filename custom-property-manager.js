@@ -117,7 +117,7 @@ async function initialiseRecords(){
     if(tenants.length === 0){
         return alert("No tenants found to initialise records");
     }
-     alert("tenant length"+tenants.length);
+     
      const recordsToInsert =[];
     for(const tenant of tenants){
         tenant.propertyId = document.getElementById("propertySelectForTenant1").value;
