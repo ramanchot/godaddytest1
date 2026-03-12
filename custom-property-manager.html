@@ -19,6 +19,16 @@
     <input type="text" id="tenantName" placeholder="Tenant Name" />
     <select id="propertySelectForTenant"></select>
     <button onclick="addTenant()">Add New Tenant</button>
+    <button onclick="loadTenants()">Show All Tenants</button>
+    <table id="tenantsList" border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Tenant Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tenantsListBody"></tbody>
+    </table>
     <h2>Get Property : <select id="propertySelectForTenant1"></select> Data for <input type="month" id="periodPicker" onchange="onMonthSelected(this.value)">.</h2>
     <table border="1" width="100%" style="display: none;" id="rentRecordTable">
       <thead>
