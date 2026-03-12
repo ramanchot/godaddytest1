@@ -86,9 +86,9 @@ async function onMonthSelected(value){
                     <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
                     </tr>`)
             );
+            document.getElementById("rentRecordTable").style.display = "table";
         }
         
-
         document.getElementById("rentRecordList").innerHTML = html;    
 }
 

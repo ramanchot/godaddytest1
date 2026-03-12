@@ -20,7 +20,7 @@
     <select id="propertySelectForTenant"></select>
     <button onclick="addTenant()">Add New Tenant</button>
     <h2>Get Property : <select id="propertySelectForTenant1"></select> Data for <input type="month" id="periodPicker" onchange="onMonthSelected(this.value)">.</h2>
-    <table border="1" width="100%">
+    <table border="1" width="100%" style="display: none;" id="rentRecordTable">
       <thead>
         <tr>
           <th>Tenant Name</th>

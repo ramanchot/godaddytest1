@@ -23,10 +23,12 @@ export default async function handler(req, res) {
             .find({
               propertyId: req.query.propertyId,
               month: Number(month),
-              year: Number(year)
+              year: Number(year),
+              tenantActive: true
             })
             .toArray();
-
+            console.log("Rent records found: "+rentRecords.length);
+          
           return res.json(rentRecords);
         }
 
