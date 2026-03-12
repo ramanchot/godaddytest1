@@ -73,16 +73,18 @@ async function loadTenants() {
         headers: { "Content-Type": "application/json" },
     });
     const tenantsList = await tenants.json();
-    alert(tenantsList.length+" Tenants found for selected property");
-   if(tenantsList.length === 0){
-    document.getElementById("tenantsListBody").innerHTML = `<tr><td align="center" colspan="3">No tenants found for selected property</td></tr>`;
-    return;
-   }else{
-    tenantsList.forEach(
-        (t) => (html += `<tr><td type='text' value='${t._id}'>${t.name}</td></tr>`)
-    );
-    document.getElementById("tenantsListBody").innerHTML = html;
-   }
+    
+    if(tenantsList.length === 0){
+        document.getElementById("tenantsListBody").innerHTML = `<tr><td align="center" colspan="3">No tenants found for selected property</td></tr>`;
+        return;
+    }else{
+        tenantsList.forEach(
+            (t) => (html += `<tr><td type='text' value='${t._id}'>${t.name}</td>
+                                <td align="center"><button onclick="markTenantInactive('${t._id}')">Mark Inactive</button></td>
+                                </tr>`)
+        );
+        document.getElementById("tenantsListBody").innerHTML = html;
+    }
 }
 
 async function onMonthSelected(value){
