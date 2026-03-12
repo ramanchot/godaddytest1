@@ -32,11 +32,23 @@ export default async function handler(req, res) {
           return res.json(rentRecords);
         }
 
-        case "GET_TENANTS_LIST": {
-          console.log("Getting tenants list for property..."+req.query.propertyId);
+        case "GET_ALL_TENANTS_LIST": {
+          console.log("Getting all tenants list for property..."+req.query.propertyId);
 
           const tenants = await db.collection("tenants")
             .find({ propertyId: req.query.propertyId })
+            .toArray();
+
+          return res.json(tenants);
+        }
+
+        case "GET_ACTIVE_TENANTS_LIST": {
+          console.log("Getting active tenants list for property..."+req.query.propertyId);
+
+          const tenants = await db.collection("tenants")
+            .find({ propertyId: req.query.propertyId,
+              isActive: true
+             })
             .toArray();
 
           return res.json(tenants);
@@ -70,6 +82,15 @@ export default async function handler(req, res) {
           });
 
           return res.json({ success: true, id: result.insertedId });
+        }
+
+        case "MARK_TENANT_INACTIVE": {
+          const result = await db.collection("tenants").updateOne(
+            { _id: new ObjectId(data.tenantId) },
+            { $set: { isActive: false } }
+          );
+
+          return res.json({ success: true });
         }
 
         case "UPDATE_RENT_RECORD": {

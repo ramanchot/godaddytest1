@@ -68,7 +68,7 @@ async function loadProperties() {
 /* Load Tenants */
 async function loadTenants() {
     html='';
-    const tenants = await fetch("/api/main?action=GET_TENANTS_LIST&propertyId="+document.getElementById("propertySelectForTenant").value, {
+    const tenants = await fetch("/api/main?action=GET_ALL_TENANTS_LIST&propertyId="+document.getElementById("propertySelectForTenant").value, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
     });
@@ -81,10 +81,26 @@ async function loadTenants() {
         tenantsList.forEach(
             (t) => (html += `<tr><td type='text' value='${t._id}'>${t.name}</td>
                                 <td align="center"><button onclick="markTenantInactive('${t._id}')">Mark Inactive</button></td>
+                                <td><label style="color: ${t.isActive ? 'green' : 'red'}" value='${t.isActive}'>${t.isActive ? 'Active' : 'Inactive'}</label></td>
                                 </tr>`)
         );
         document.getElementById("tenantsListBody").innerHTML = html;
     }
+}
+
+async function markTenantInactive(tenantId){
+    await fetch("/api/main", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: "MARK_TENANT_INACTIVE",
+            data: {
+                tenantId
+            }
+        }),
+    });
+    alert("Tenant marked inactive");
+    loadTenants();
 }
 
 async function onMonthSelected(value){
@@ -135,7 +151,7 @@ async function initialiseRecords(){
     console.log("========Initialising records for current month...=======");
     const [year, month] = document.getElementById("periodPicker").value.split("-");
 
-    const tenants = await fetch("/api/main?action=GET_TENANTS_LIST&propertyId="+document.getElementById("propertySelectForTenant1").value).then(res => res.json());
+    const tenants = await fetch("/api/main?action=GET_ACTIVE_TENANTS_LIST&propertyId="+document.getElementById("propertySelectForTenant1").value).then(res => res.json());
     if(tenants.length === 0){
         return alert("No tenants found to initialise records");
     }
