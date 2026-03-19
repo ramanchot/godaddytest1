@@ -184,6 +184,7 @@ async function onMonthSelected(value) {
                         totalRentReceived += p.rentAmount;
                     
                 html += `<tr style="${index % 2 === 0 ? 'background-color: #f2f2f2;' : 'background-color: #ffffff;'}">
+                    <td>${index+1}</td>
                     <td>${p.tenantName}</td>
                     <td>${p.month}</td>
                     <td>${p.year}</td>
