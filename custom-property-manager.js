@@ -188,15 +188,14 @@ async function onMonthSelected(value) {
                     <td>${p.tenantName}</td>
                     <td>${p.month}</td>
                     <td>${p.year}</td>
-                    <td><input type="number" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}" value="${p.rentAmount}" /></td>
+                    <td><input type="number" onblur="updateRentRecord('${p._id}', this)" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}; box-sizing: border-box;" value="${p.rentAmount}" /></td>
                     <td>${p.rentReceived}</td>
-                    <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
                 </tr>`;
         });
             html += `<tr style="font-weight: bold; background-color: #f2f2f2;">
                         <td colspan="3" align="right">Total</td>
                         <td>₹${totalRentReceived.toLocaleString("en-IN")}</td>
-                        <td colspan="2"></td>
+                        <td colspan="1"></td>
                     </tr>`;
             document.getElementById("rentRecordTable").style.display = "table";
         }
@@ -211,7 +210,7 @@ async function onMonthSelected(value) {
 async function updateRentRecord(id, element) {
     const tr = element.parentElement.parentElement;
     const rentAmountRecieved = tr.querySelector("input").value;
-    alert(id);
+    showLoader();
     await fetch("/api/main", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -223,6 +222,9 @@ async function updateRentRecord(id, element) {
             }
         }),
     });
+
+    alert("Rent record updated");
+    onMonthSelected(document.getElementById("periodPicker").value);
 }
 
 async function initialiseRecords() {

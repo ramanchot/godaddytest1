@@ -11,8 +11,10 @@
 <body>
 
   <div class="container">
-    <button onclick="togglePropertiesContainer()">🏠</button>
-    <button onclick="toggleTenantsContainer()">👥</button>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+    <button onclick="togglePropertiesContainer()" title="Hide/View Properties">🏠</button>
+    <button onclick="toggleTenantsContainer()" title="Hide/View Tenants">👥</button>
+    </div>
 
     <div class="propertiesContainer" style="display: none;">
       <h2>Properties</h2>
@@ -59,7 +61,6 @@
             <th>Year</th>
             <th>Rent Amount</th>
             <th>Rent Recieved</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="rentRecordList"></tbody>
