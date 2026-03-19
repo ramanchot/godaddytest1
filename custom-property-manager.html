@@ -16,13 +16,13 @@
     <button onclick="toggleTenantsContainer()" title="Hide/View Tenants">👥</button>
     </div>
 
-    <div class="propertiesContainer" style="display: none;">
+    <div class="propertiesContainer" style="display: none; border: 1px solid black; padding: 10px;border-radius: 5px;;">
       <h2>Properties</h2>
       <input type="text" id="propertyName" placeholder="Property Name" />
       <button onclick="addProperty()">Add New Property</button>
       <button onclick="loadProperties()">Show All properties</button>
       <!-- <div id="propertiesList"></div> -->
-      <table id="propertiesList" border="1" width="100%">
+      <table id="propertiesList" style="display: none; border:1px solid black;" width="100%">
         <thead>
           <tr>
             <th>Property Name</th>

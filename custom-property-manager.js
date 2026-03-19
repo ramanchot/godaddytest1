@@ -87,14 +87,18 @@ async function addTenant() {
 
 /* Load Properties */
 async function loadProperties() {
+    document.getElementById('propertiesList').style.display = 'table';
     const res = await fetch("/api/getProperties");
     const props = await res.json();
     let html = ``;
-    props.forEach(
-        (p) => (html += `<tr><td type='text' value='${p._id}'>${p.name}</td>
-                                <td align="center"><button onclick="deleteProperty('${p._id}')">Delete Property</button></td>
-                                </tr>`)
-    );
+    props.forEach((p, index) => {
+    html += `<tr style="${index % 2 === 0 ? 'background-color: #f2f2f2;' : 'background-color: #ffffff;'}">
+                <td>${p.name}</td>
+                <td align="center">
+                    <button onclick="deleteProperty('${p._id}')">Delete Property</button>
+                </td>
+            </tr>`;
+    });
 
     document.getElementById("propertiesListBody").innerHTML = html;
 }
@@ -175,11 +179,11 @@ async function onMonthSelected(value) {
             </td></tr>`;
         } else {
             props.forEach(
-                (p) => {
+                (p,index) => {
                     
                         totalRentReceived += p.rentAmount;
                     
-                html += `<tr>
+                html += `<tr style="${index % 2 === 0 ? 'background-color: #f2f2f2;' : 'background-color: #ffffff;'}">
                     <td>${p.tenantName}</td>
                     <td>${p.month}</td>
                     <td>${p.year}</td>
@@ -205,6 +209,7 @@ async function onMonthSelected(value) {
 async function updateRentRecord(id, element) {
     const tr = element.parentElement.parentElement;
     const rentAmountRecieved = tr.querySelector("input").value;
+    const isrentReceived = Number(rentAmountRecieved) > 0;
     showLoader();
     await fetch("/api/main", {
         method: "POST",
@@ -213,7 +218,8 @@ async function updateRentRecord(id, element) {
             action: "UPDATE_RENT_RECORD",
             data: {
                 id,
-                rentAmountRecieved
+                rentAmountRecieved,
+                rentReceived: isrentReceived
             }
         }),
     });
