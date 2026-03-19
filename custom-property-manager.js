@@ -4,14 +4,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const now = new Date();
     const year = now.getFullYear();
     let month = now.getMonth() + 1; // Months are 0-based
-
     // Ensure 2-digit month (e.g., 03 instead of 3)
     month = month < 10 ? '0' + month : month;
-
     periodPicker.value = `${year}-${month}`;
-
-    // Optional: trigger your function immediately
-    //onMonthSelected(periodPicker.value);
 });
 
 loadPropertiesForAddTenant();
