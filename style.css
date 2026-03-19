@@ -1,45 +1,103 @@
+/* General layout */
 body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 10px;
 }
 
 .container {
-    max-width: 700px;
-    margin: auto;
+  max-width: 1200px;
+  margin: auto;
 }
 
-.property-card {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    border: 1px solid #ddd;
-    transition: 0.2s;
+/* Buttons */
+button {
+  padding: 8px 12px;
+  margin: 5px 2px;
+  cursor: pointer;
 }
 
-.property-card:hover {
-    background: #f9f9f9;
+/* Inputs */
+input, select {
+  padding: 6px;
+  margin: 5px 0;
+  width: 100%;
+  max-width: 300px;
 }
 
-.tenant-box {
-    display: none;
-    background: #fff;
-    padding: 15px;
-    border-left: 3px solid #007bff;
-    margin-bottom: 15px;
-    border-radius: 0 0 8px 8px;
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
 
-.tenant-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid #eee;
+th, td {
+  padding: 8px;
+  text-align: left;
+  word-break: break-word;
 }
 
-.none {
-    color: gray;
-    font-style: italic;
+/* Make table scrollable on small screens */
+.rentRecordsContainer,
+.tenantsContainer,
+.propertiesContainer {
+  overflow-x: auto;
+}
+
+/* Spinner (keep yours) */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* MOBILE VIEW */
+@media (max-width: 768px) {
+
+  h2 {
+    font-size: 16px;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  input, select {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Make tables scroll horizontally */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Stack header nicely */
+  .container > button {
+    width: 48%;
+  }
+
 }

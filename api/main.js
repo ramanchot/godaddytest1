@@ -104,7 +104,10 @@ export default async function handler(req, res) {
         case "UPDATE_RENT_RECORD": {
           const result = await db.collection("rentRecords").updateOne(
             { _id: new ObjectId(data.id) },
-            { $set: { rentAmount: Number(data.rentAmountRecieved) } }
+            { $set: { rentAmount: Number(data.rentAmountRecieved), rentReceived :data.rentReceived } },
+            {
+              
+            }
           );
 
           return res.json({ success: true });
