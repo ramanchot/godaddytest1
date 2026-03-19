@@ -194,6 +194,7 @@ async function onMonthSelected(value) {
             html += `<tr style="font-weight: bold; background-color: #f2f2f2;">
                         <td colspan="3" align="right">Total</td>
                         <td>₹${totalRentReceived.toLocaleString("en-IN")}</td>
+                        <td></td>
                     </tr>`;
             document.getElementById("rentRecordTable").style.display = "table";
         }
