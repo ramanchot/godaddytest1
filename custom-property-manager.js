@@ -1,5 +1,16 @@
 loadPropertiesForAddTenant();
 
+function togglePropertiesContainer(){
+    const container = document.querySelector('.propertiesContainer');
+    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleTenantsContainer(){
+    const container = document.querySelector('.tenantsContainer');
+    container.style.display = container.style.display === 'none' ? 'block' : 'none';
+}
+
+
 /* Populate property into select box */
 async function loadPropertiesForAddTenant() {
     const res = await fetch("/api/getProperties");
