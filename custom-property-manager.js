@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
   periodPicker.value = `${year}-${month}`;
 
   // Optional: trigger your function immediately
-  onMonthSelected(periodPicker.value);
+  //onMonthSelected(periodPicker.value);
 });
 
 loadPropertiesForAddTenant();
@@ -159,15 +159,24 @@ async function markTenantInactive(tenantId){
 async function onMonthSelected(value){
     if (!value) return;
 
+    showLoader(); // ✅ START
+
+    try {
         const [year, month] = value.split("-");
         const propertyId = document.getElementById("propertySelectForTenant1").value;
+
         const res = await fetch(`/api/main?action=GET_RENT_RECORDS_LIST&month=${month}&year=${year}&propertyId=${propertyId}`);
         const props = await res.json();
+
         let html = ``;
+
         if(props.length === 0){
-            html = `<tr><td align="center" colspan="6">No records found for selected month and year.<a href="#" onclick="initialiseRecords()">Click Here to Initialise Records for Current Month</a></td></tr>`;
-        }else{
-                props.forEach(
+            html = `<tr><td align="center" colspan="6">
+                No records found.
+                <a href="#" onclick="initialiseRecords()">Click Here to Initialise</a>
+            </td></tr>`;
+        } else {
+            props.forEach(
                 (p) => (html += `<tr>
                     <td>${p.tenantName}</td>
                     <td>${p.month}</td>
@@ -175,12 +184,17 @@ async function onMonthSelected(value){
                     <td><input type="number" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}" value="${p.rentAmount}" /></td>
                     <td>${p.rentReceived}</td>
                     <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
-                    </tr>`)
+                </tr>`)
             );
+
             document.getElementById("rentRecordTable").style.display = "table";
         }
-        
-        document.getElementById("rentRecordList").innerHTML = html;    
+
+        document.getElementById("rentRecordList").innerHTML = html;
+
+    } finally {
+        hideLoader(); // ✅ ALWAYS HIDE
+    }
 }
 
 async function  updateRentRecord(id, element){
@@ -236,4 +250,11 @@ async function initialiseRecords(){
             }
         }),
     });
+}
+function showLoader() {
+    document.getElementById("loadingOverlay").style.display = "flex";
+}
+
+function hideLoader() {
+    document.getElementById("loadingOverlay").style.display = "none";
 }

@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Property Manager</title>
+  <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -12,24 +14,24 @@
     <button onclick="togglePropertiesContainer()">🏠</button>
     <button onclick="toggleTenantsContainer()">👥</button>
 
-      <div class="propertiesContainer" style="display: none;">
+    <div class="propertiesContainer" style="display: none;">
       <h2>Properties</h2>
-        <input type="text" id="propertyName" placeholder="Property Name" />
-        <button onclick="addProperty()">Add New Property</button>
-        <button onclick="loadProperties()">Show All properties</button>
-        <!-- <div id="propertiesList"></div> -->
-        <table id="propertiesList" border="1" width="100%">
-          <thead>
-            <tr>
-              <th>Property Name</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="propertiesListBody"></tbody>
-        </table>
+      <input type="text" id="propertyName" placeholder="Property Name" />
+      <button onclick="addProperty()">Add New Property</button>
+      <button onclick="loadProperties()">Show All properties</button>
+      <!-- <div id="propertiesList"></div> -->
+      <table id="propertiesList" border="1" width="100%">
+        <thead>
+          <tr>
+            <th>Property Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="propertiesListBody"></tbody>
+      </table>
     </div>
-    
-    <div class="tenantsContainer"  style="display: none;">
+
+    <div class="tenantsContainer" style="display: none;">
       <h2>Tenant</h2>
       <input type="text" id="tenantName" placeholder="Tenant Name" />
       <select id="propertySelectForTenant"></select>
@@ -47,7 +49,8 @@
       </table>
     </div>
     <div class="rentRecordsContainer" style="display: none;">
-    <h2>Get Property : <select id="propertySelectForTenant1"></select> Data for <input type="month" id="periodPicker" onchange="onMonthSelected(this.value)">.</h2>
+      <h2>Get Property : <select id="propertySelectForTenant1"></select> Data for <input type="month" id="periodPicker"
+          onchange="onMonthSelected(this.value)">.</h2>
       <table border="1" width="100%" style="display: none;" id="rentRecordTable">
         <thead>
           <tr>
@@ -63,7 +66,9 @@
       </table>
     </div>
   </div>
-    <script src="custom-property-manager.js"></script>
-
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+  <script src="custom-property-manager.js"></script>
 </body>
 </html>
