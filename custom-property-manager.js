@@ -1,3 +1,19 @@
+window.addEventListener('DOMContentLoaded', () => {
+  const periodPicker = document.getElementById('periodPicker');
+
+  const now = new Date();
+  const year = now.getFullYear();
+  let month = now.getMonth() + 1; // Months are 0-based
+
+  // Ensure 2-digit month (e.g., 03 instead of 3)
+  month = month < 10 ? '0' + month : month;
+
+  periodPicker.value = `${year}-${month}`;
+
+  // Optional: trigger your function immediately
+  onMonthSelected(periodPicker.value);
+});
+
 loadPropertiesForAddTenant();
 
 function togglePropertiesContainer(){
@@ -20,7 +36,15 @@ async function loadPropertiesForAddTenant() {
         (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
     );
     document.getElementById("propertySelectForTenant").innerHTML = html;
-    document.getElementById("propertySelectForTenant1").innerHTML = html;
+    const getdataselect = document.getElementById("propertySelectForTenant1");
+    getdataselect.innerHTML = html
+
+    if (getdataselect.options.length > 1) {
+        getdataselect.selectedIndex = 1;
+    }
+    const rentRecordsContainer = document.querySelector('.rentRecordsContainer');
+    rentRecordsContainer.style.display='block';
+    onMonthSelected(document.getElementById("periodPicker").value);
 }
 
 /* Add Property */
@@ -148,7 +172,7 @@ async function onMonthSelected(value){
                     <td>${p.tenantName}</td>
                     <td>${p.month}</td>
                     <td>${p.year}</td>
-                    <td><input type="number" value="${p.rentAmount}" /></td>
+                    <td><input type="number" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}" value="${p.rentAmount}" /></td>
                     <td>${p.rentReceived}</td>
                     <td><button onclick="updateRentRecord('${p._id}', this)">Update</button></td>
                     </tr>`)
