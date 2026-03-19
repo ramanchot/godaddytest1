@@ -223,9 +223,9 @@ async function updateRentRecord(id, element) {
             }
         }),
     });
-
-    alert("Rent record updated");
+    
     onMonthSelected(document.getElementById("periodPicker").value);
+    alert("Rent record updated");
 }
 
 async function initialiseRecords() {
