@@ -13,7 +13,16 @@
     <input type="text" id="propertyName" placeholder="Property Name" />
     <button onclick="addProperty()">Add New Property</button>
     <button onclick="loadProperties()">Show All properties</button>
-    <div id="propertiesList"></div>
+    <!-- <div id="propertiesList"></div> -->
+     <table id="propertiesList" border="1" width="100%">
+      <thead>
+        <tr>
+          <th>Property Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="propertiesListBody"></tbody>
+    </table>
 
     <h2>Tenant</h2>
     <input type="text" id="tenantName" placeholder="Tenant Name" />

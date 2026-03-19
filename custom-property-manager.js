@@ -59,10 +59,28 @@ async function loadProperties() {
     const props = await res.json();
     let html = ``;
     props.forEach(
-        (p) => (html += `<li type='text' value='${p._id}'>${p.name}</li>`)
+        (p) => (html += `<tr><td type='text' value='${p._id}'>${p.name}</td>
+                                <td align="center"><button onclick="deleteProperty('${p._id}')">Delete Property</button></td>
+                                </tr>`)
     );
 
-    document.getElementById("propertiesList").innerHTML = html;
+    document.getElementById("propertiesListBody").innerHTML = html;
+}
+
+async function deleteProperty(propertyId){
+    if(!confirm("Are you sure you want to delete this property? This will also delete all tenants and rent records associated with this property.")){
+        return;
+    }
+    await fetch("/api/main", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: "DELETE_PROPERTY",
+            data: { propertyId }
+        }),
+    });
+    alert("Property deleted");
+    loadProperties();
 }
 
 /* Load Tenants */

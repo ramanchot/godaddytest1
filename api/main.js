@@ -75,6 +75,14 @@ export default async function handler(req, res) {
           return res.json({ success: true, id: result.insertedId });
         }
 
+        case "DELETE_PROPERTY": {
+          const result = await db.collection("properties").deleteOne({
+            _id: new ObjectId(data.propertyId)
+          });
+
+          return res.json({ success: true });
+        }
+
         case "ADD_TENANT": {
           const result = await db.collection("tenants").insertOne({
             propertyId: data.propertyId,
