@@ -219,7 +219,7 @@ async function onMonthSelected(value) {
             html += `<tr style="font-weight: bold; background-color: #f2f2f2;">
                         <td colspan="4" align="right">Total</td>
                         <td>₹${totalRentReceived.toLocaleString("en-IN")}</td>
-                        <td>₹${totalElectricityBills.toLocaleString("en-IN")}</td>
+                        ${isElecMonth ? `<td>₹${totalElectricityBills.toLocaleString("en-IN")}</td>` : ""}
                     </tr>`;
             document.getElementById("rentRecordTable").style.display = "table";
         }
@@ -247,7 +247,6 @@ async function updateRentRecord(id, element) {
                 rentAmountRecieved,
                 rentReceived: isrentReceived,
                 electricityAmount
-                //electricityAmount: tr.querySelectorAll("input")[1] ? tr.querySelectorAll("input")[1].value : 0
             }
         }),
     });
