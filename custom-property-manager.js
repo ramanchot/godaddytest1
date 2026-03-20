@@ -174,6 +174,7 @@ async function onMonthSelected(value) {
     showLoader(); // ✅ START
 
     try {
+        let isElecMonth = false;
         let totalRentReceived = 0;
         let totalElectricityBills = 0;
         const [year, month] = value.split("-");
@@ -181,7 +182,8 @@ async function onMonthSelected(value) {
 
         const res = await fetch(`/api/main?action=GET_RENT_RECORDS_LIST&month=${month}&year=${year}&propertyId=${propertyId}`);
         const props = await res.json();
-        let isElecMonth = props.some(p => p.isElectricityMonth);
+        isElecMonth = props.some(p => p.isElectricityMonth);
+        document.getElementById("isElectricityMonth").style.display = isElecMonth ? "none" : "block";
 
         let html = ``;
 

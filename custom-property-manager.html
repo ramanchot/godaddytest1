@@ -52,16 +52,9 @@
     <div class="rentRecordsContainer" style="display: none;">
       <h2>Get Property : <select id="propertySelectForTenant1"></select> Data for <input type="month" id="periodPicker"
           onchange="onMonthSelected(this.value)">.</h2>
-        <div style="text-align: end;"><a href="#" onclick="setIselectrictyMonthTrue()">Is this Month's Electricity Bill Received?</a></div>
+        <div id="isElectricityMonth" style="text-align: end; display: none;"><a href="#" onclick="setIselectrictyMonthTrue()">Mark this is Electricity Bill Month</a></div>
         <table border="1" width="100%" style="display: none;" id="rentRecordTable">
         <thead>
-          <!-- <tr>
-            <th>S.No.</th>
-            <th>Tenant Name</th>
-            <th>Month</th>
-            <th>Year</th>
-            <th>Rent Amount</th>
-          </tr> -->
         </thead>
         <tbody id="rentRecordList"></tbody>
       </table>
