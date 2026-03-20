@@ -1,4 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
+    showLoader();
     const periodPicker = document.getElementById('periodPicker');
 
     const now = new Date();
