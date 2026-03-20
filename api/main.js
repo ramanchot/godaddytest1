@@ -104,12 +104,24 @@ export default async function handler(req, res) {
         case "UPDATE_RENT_RECORD": {
           const result = await db.collection("rentRecords").updateOne(
             { _id: new ObjectId(data.id) },
-            { $set: { rentAmount: Number(data.rentAmountRecieved), rentReceived :data.rentReceived } },
-            {
-              
-            }
+            { $set: { rentAmount: Number(data.rentAmountRecieved), rentReceived :data.rentReceived, electricityBill :Number(data.electricityAmount)} },
+            
           );
 
+          return res.json({ success: true });
+        }
+
+        case "SET_ELECTRICITY_BILL_RECEIVED_FOR_MONTH_AS_TRUE": {
+          console.log("Setting electricity bill received for month as true..."+JSON.stringify(data));
+          const result = await db.collection("rentRecords").updateMany(
+            {
+              propertyId: data.propertyId,
+              month: data.month,
+              year: data.year
+            },
+            { $set: { isElectricityMonth: data.isElectricityMonth } }
+          );
+          console.log("Electricity bill received for month updated for records count: "+result.modifiedCount);
           return res.json({ success: true });
         }
 

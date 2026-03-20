@@ -9,10 +9,9 @@ window.addEventListener('DOMContentLoaded', () => {
     periodPicker.value = `${year}-${month}`;
 });
 let clickCount = 0;
-document.querySelector('#headingMain').addEventListener('click',(e)=>{
+document.querySelector('#headingMain').addEventListener('click', (e) => {
     clickCount++;
-    if(clickCount ===3)
-    {
+    if (clickCount === 3) {
         let toggle = document.querySelector('.adminControlContainer');
         toggle.style.display = toggle.style.display === 'none' ? 'flex' : 'none';
         clickCount = 0;
@@ -103,7 +102,7 @@ async function loadProperties() {
     const props = await res.json();
     let html = ``;
     props.forEach((p, index) => {
-    html += `<tr style="${index % 2 === 0 ? 'background-color: #f2f2f2;' : 'background-color: #ffffff;'}">
+        html += `<tr style="${index % 2 === 0 ? 'background-color: #f2f2f2;' : 'background-color: #ffffff;'}">
                 <td>${p.name}</td>
                 <td align="center">
                     <button onclick="deleteProperty('${p._id}')">Delete Property</button>
@@ -175,14 +174,26 @@ async function onMonthSelected(value) {
 
     try {
         let totalRentReceived = 0;
+        let totalElectricityBills = 0;
         const [year, month] = value.split("-");
         const propertyId = document.getElementById("propertySelectForTenant1").value;
 
         const res = await fetch(`/api/main?action=GET_RENT_RECORDS_LIST&month=${month}&year=${year}&propertyId=${propertyId}`);
         const props = await res.json();
+        let isElecMonth = props.some(p => p.isElectricityMonth);
 
         let html = ``;
 
+        html += `
+                <tr>
+                    <th>S.No.</th>
+                    <th>Tenant Name</th>
+                    <th>Month</th>
+                    <th>Year</th>
+                    <th>Rent Amount</th>
+                    ${isElecMonth ? "<th>Electricity Amount</th>" : ""}
+                </tr>
+                `;
         if (props.length === 0) {
             html = `<tr><td align="center" colspan="6">
                 No records found.
@@ -190,22 +201,25 @@ async function onMonthSelected(value) {
             </td></tr>`;
         } else {
             props.forEach(
-                (p,index) => {
-                    
-                        totalRentReceived += p.rentAmount;
-                    
-                html += `<tr style="${index % 2 === 0 ? 'background-color: #f2f2f2;' : 'background-color: #ffffff;'}">
-                    <td>${index+1}</td>
+                (p, index) => {
+
+                    totalRentReceived += p.rentAmount;
+                    totalElectricityBills += p.electricityBill;
+                    html += `<tr style="${index % 2 === 0 ? 'background-color: #f2f2f2;' : 'background-color: #ffffff;'}">
+                    <td>${index + 1}</td>
                     <td>${p.tenantName}</td>
                     <td>${p.month}</td>
                     <td>${p.year}</td>
-                    <td><input type="number" onblur="updateRentRecord('${p._id}', this)" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}; box-sizing: border-box;" value="${p.rentAmount}" /></td>
-                </tr>`;
-        });
+                    <td><input data-type="rent" type="number" onblur="updateRentRecord('${p._id}', this)" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}; box-sizing: border-box;" value="${p.rentAmount}" /></td>
+                    ${isElecMonth ? `<td><input data-type="electricity" type="number" value="${p.electricityBill}" onblur="updateRentRecord('${p._id}', this)"
+                                                    style="background-color: ${p.electricityBill > 0 ? '#d4edda' : '#f8d7da'};box-sizing: border-box;"/>
+                                              </td>` : ""}
+                    </tr>`;
+                });
             html += `<tr style="font-weight: bold; background-color: #f2f2f2;">
-                        <td colspan="3" align="right">Total</td>
+                        <td colspan="4" align="right">Total</td>
                         <td>₹${totalRentReceived.toLocaleString("en-IN")}</td>
-                        <td></td>
+                        <td>₹${totalElectricityBills.toLocaleString("en-IN")}</td>
                     </tr>`;
             document.getElementById("rentRecordTable").style.display = "table";
         }
@@ -218,8 +232,9 @@ async function onMonthSelected(value) {
 }
 
 async function updateRentRecord(id, element) {
-    const tr = element.parentElement.parentElement;
-    const rentAmountRecieved = tr.querySelector("input").value;
+    const tr = element.closest("tr");
+    const rentAmountRecieved = tr.querySelector('input[data-type="rent"]').value;
+    const electricityAmount = tr.querySelector('input[data-type="electricity"]').value;
     const isrentReceived = Number(rentAmountRecieved) > 0;
     showLoader();
     await fetch("/api/main", {
@@ -230,11 +245,13 @@ async function updateRentRecord(id, element) {
             data: {
                 id,
                 rentAmountRecieved,
-                rentReceived: isrentReceived
+                rentReceived: isrentReceived,
+                electricityAmount
+                //electricityAmount: tr.querySelectorAll("input")[1] ? tr.querySelectorAll("input")[1].value : 0
             }
         }),
     });
-    
+
     onMonthSelected(document.getElementById("periodPicker").value);
     alert("Rent record updated");
 }
@@ -282,4 +299,21 @@ function showLoader() {
 
 function hideLoader() {
     document.getElementById("loadingOverlay").style.display = "none";
+}
+
+async function setIselectrictyMonthTrue() {
+    alert((document.getElementById("periodPicker").value.split("-")[1]) + '' + (document.getElementById("periodPicker").value.split("-")[0]) + '' + document.getElementById("propertySelectForTenant1").value);
+    await fetch("api/main", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: "SET_ELECTRICITY_BILL_RECEIVED_FOR_MONTH_AS_TRUE",
+            data: {
+                month: Number(document.getElementById("periodPicker").value.split("-")[1]),
+                year: Number(document.getElementById("periodPicker").value.split("-")[0]),
+                propertyId: document.getElementById("propertySelectForTenant1").value,
+                isElectricityMonth: true
+            }
+        }),
+    })
 }
