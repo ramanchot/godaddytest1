@@ -8,6 +8,17 @@ window.addEventListener('DOMContentLoaded', () => {
     month = month < 10 ? '0' + month : month;
     periodPicker.value = `${year}-${month}`;
 });
+let clickCount = 0;
+document.querySelector('#headingMain').addEventListener('click',(e)=>{
+    clickCount++;
+    if(clickCount ===3)
+    {
+        let toggle = document.querySelector('.adminControlContainer');
+        toggle.style.display = toggle.style.display === 'none' ? 'flex' : 'none';
+        clickCount = 0;
+    }
+
+})
 
 loadPropertiesForAddTenant();
 

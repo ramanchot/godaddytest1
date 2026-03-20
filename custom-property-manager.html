@@ -5,15 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Custom Property Manager</title>
   <link rel="stylesheet" href="style.css">
-
 </head>
-
+<h1 style="text-align: center;" id="headingMain">Property Manager</h1>
 <body>
 
   <div class="container">
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-    <button onclick="togglePropertiesContainer()" title="Hide/View Properties">🏠</button>
-    <button onclick="toggleTenantsContainer()" title="Hide/View Tenants">👥</button>
+    <div class="adminControlContainer" style="display:none; gap:10px; flex-wrap:wrap;justify-content: center;">
+    <button onclick="togglePropertiesContainer()" title="Hide/View Properties">🏠 Manage Properties</button>
+    <button onclick="toggleTenantsContainer()" title="Hide/View Tenants">👥 Manage Tenants</button>
     </div>
 
     <div class="propertiesContainer" style="display: none; border: 1px solid black; padding: 10px;border-radius: 5px;;">
