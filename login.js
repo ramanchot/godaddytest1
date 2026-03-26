@@ -22,7 +22,6 @@ async function login(){
     }
     else{
         const errorData = await response.json();
-        alert('Login failed: ' + errorData.error);
         document.getElementById('message').textContent = 'Login failed: ' + errorData.error;
         setTimeout(() => {
             document.getElementById('message').textContent = '';
