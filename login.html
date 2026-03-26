@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
-  </head>
-  <body>
-    <div class="container" style="display: flex; justify-content: center; align-items: center; height: 80vh;">
-      <div class="loginBox" style="background: #f4f6f8; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width: 300px;">
-        <h1 style="text-align: center;" id="headingMain">Login</h1>
-        <input type="text" id="username" placeholder="Username" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;" />
-        <input type="password" id="password" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #ccc;" />
-        <button id="loginButton" onclick="login()" style="width: 100%; padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 6px;">Login</button>
-        <div id="message" style="margin-top: 15px; text-align: center; color: red;"></div>
-    </div>
-    </div>
-    <script src="login.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+</head>
+
+<body>
+    <form id="loginForm">
+        <div class="container" style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+            <div class="loginBox"
+                style="background: #f4f6f8; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width: 300px;">
+                <h1 style="text-align: center;" id="headingMain">Login</h1>
+                <input type="text" id="username" placeholder="Username"
+                    style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;" />
+                <input type="password" id="password" placeholder="Password"
+                    style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #ccc;" />
+                <button id="loginButton" onclick="login()"
+                    style="width: 100%; padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 6px;">Login</button>
+                <div id="message" style="margin-top: 15px; text-align: center; color: red;"></div>
+            </div>
+        </div>
+    </form>
+</body>
+<script src="login.js"></script>
+
 </html>
