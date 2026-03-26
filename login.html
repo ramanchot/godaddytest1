@@ -11,8 +11,9 @@
         <h1 style="text-align: center;" id="headingMain">Login</h1>
         <input type="text" id="username" placeholder="Username" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;" />
         <input type="password" id="password" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #ccc;" />
-        <button onclick="window.location.href='custom-property-manager.html'" style="width: 100%; padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 6px;">Login</button>
-      </div>
+        <button id="loginButton" onclick="login()" style="width: 100%; padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 6px;">Login</button>
+        <div id="message" style="margin-top: 15px; text-align: center; color: red;"></div>
     </div>
-    <script src="custom-property-manager.js"></script>
+    </div>
+    <script src="login.js"></script>
 </html>

@@ -67,6 +67,18 @@ export default async function handler(req, res) {
 
       switch (action) {
 
+        case "LOGIN": {
+          const user = await db.collection("users").findOne({ username: data.username });
+          if (!user) {
+            return res.status(401).json({ error: "Invalid username or password" });
+          }
+          if (user.password !== data.password) {
+            return res.status(401).json({ error: "Invalid username or password" });
+          }
+          return res.json({ success: true, user: { id: user._id, username: user.username } });
+        }
+
+
         case "ADD_PROPERTY": {
           const result = await db.collection("properties").insertOne({
             name: data.name
