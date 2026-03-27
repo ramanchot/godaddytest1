@@ -120,12 +120,12 @@ export default async function handler(req, res) {
           const token = jwt.sign(
             { userId: dbUser._id, username: dbUser.username },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "10m" }
           );
 
           res.setHeader(
             "Set-Cookie",
-            `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`
+            `token=${token}; HttpOnly; Path=/; Max-Age=600; SameSite=Strict`
           );
 
           return res.json({

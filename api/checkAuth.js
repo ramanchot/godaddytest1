@@ -9,12 +9,11 @@ export default function handler(req, res) {
     .split("; ")
     .find(row => row.startsWith("token="))
     ?.split("=")[1];
-console.log("Token found: " + token);
+  console.log("Token found: " + token);
   if (!token) return res.status(401).end();
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Token verified, user: " + JSON.stringify(decoded));
     res.json({ user: decoded });
   } catch {
     res.status(401).end();
