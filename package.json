@@ -1,7 +1,13 @@
 {
-  "name" : "my-vercel-project",
-  "version" : "1.0.0",
-  "dependencies" : {
-    "mongodb" : "6.5.0"
+  "name": "my-vercel-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "-": "^0.0.1",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "g": "^2.0.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "6.5.0",
+    "vercel": "^50.23.2"
   }
-}  
+}
