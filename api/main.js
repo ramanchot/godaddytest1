@@ -1,4 +1,25 @@
+// import dotenv from "dotenv";
+// dotenv.config({ path: ".env.local" }); uncomment for local testing, comment out for production since main.js already loads env variables
 import { MongoClient, ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
+function verifyUser(req) {
+  const cookie = req.headers.cookie || "";
+
+  const token = cookie
+    .split("; ")
+    .find(row => row.startsWith("token="))
+    ?.split("=")[1];
+
+  if (!token) return null;
+
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    return null;
+  }
+}
 
 const client = new MongoClient(process.env.MONGODB_URI);
 const clientPromise = client.connect();
@@ -11,7 +32,12 @@ export default async function handler(req, res) {
     // HANDLE GET REQUESTS
     // ==========================
     if (req.method === "GET") {
-      console.log("Handling GET request..."+JSON.stringify(req.query));
+      const user = verifyUser(req);
+      console.log("User verified: " + JSON.stringify(user));
+      if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      console.log("Handling GET request..." + JSON.stringify(req.query));
       const { action, month, year } = req.query;
       console.log('Property ID:', req.query.propertyId);
       switch (action) {
@@ -27,13 +53,13 @@ export default async function handler(req, res) {
               tenantActive: true
             })
             .toArray();
-            console.log("Rent records found: "+rentRecords.length);
-          
+          console.log("Rent records found: " + rentRecords.length);
+
           return res.json(rentRecords);
         }
 
         case "GET_ALL_TENANTS_LIST": {
-          console.log("Getting all tenants list for property..."+req.query.propertyId);
+          console.log("Getting all tenants list for property..." + req.query.propertyId);
 
           const tenants = await db.collection("tenants")
             .find({ propertyId: req.query.propertyId })
@@ -43,12 +69,13 @@ export default async function handler(req, res) {
         }
 
         case "GET_ACTIVE_TENANTS_LIST": {
-          console.log("Getting active tenants list for property..."+req.query.propertyId);
+          console.log("Getting active tenants list for property..." + req.query.propertyId);
 
           const tenants = await db.collection("tenants")
-            .find({ propertyId: req.query.propertyId,
+            .find({
+              propertyId: req.query.propertyId,
               isActive: true
-             })
+            })
             .toArray();
 
           return res.json(tenants);
@@ -64,18 +91,47 @@ export default async function handler(req, res) {
     // ==========================
     if (req.method === "POST") {
       const { action, data } = req.body;
+      if (action !== "LOGIN") {
+        const user = verifyUser(req);
+
+        console.log("User verified (POST):", user);
+
+        if (!user) {
+          return res.status(401).json({ error: "Unauthorized" });
+        }
+      }
+
 
       switch (action) {
 
         case "LOGIN": {
-          const user = await db.collection("users").findOne({ username: data.username });
-          if (!user) {
+          const dbUser = await db.collection("users").findOne({ username: data.username });
+
+          if (!dbUser) {
             return res.status(401).json({ error: "Invalid username or password" });
           }
-          if (user.password !== data.password) {
+
+          const isMatch = await bcrypt.compare(data.password, dbUser.password);
+
+          if (!isMatch) {
             return res.status(401).json({ error: "Invalid username or password" });
           }
-          return res.json({ success: true, user: { id: user._id, username: user.username } });
+
+          const token = jwt.sign(
+            { userId: dbUser._id, username: dbUser.username },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+          );
+
+          res.setHeader(
+            "Set-Cookie",
+            `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`
+          );
+
+          return res.json({
+            success: true,
+            user: { id: dbUser._id, username: dbUser.username }
+          });
         }
 
 
@@ -116,15 +172,15 @@ export default async function handler(req, res) {
         case "UPDATE_RENT_RECORD": {
           const result = await db.collection("rentRecords").updateOne(
             { _id: new ObjectId(data.id) },
-            { $set: { rentAmount: Number(data.rentAmountRecieved), rentReceived :data.rentReceived, electricityBill :Number(data.electricityAmount)} },
-            
+            { $set: { rentAmount: Number(data.rentAmountRecieved), rentReceived: data.rentReceived, electricityBill: Number(data.electricityAmount) } },
+
           );
 
           return res.json({ success: true });
         }
 
         case "SET_ELECTRICITY_BILL_RECEIVED_FOR_MONTH_AS_TRUE": {
-          console.log("Setting electricity bill received for month as true..."+JSON.stringify(data));
+          console.log("Setting electricity bill received for month as true..." + JSON.stringify(data));
           const result = await db.collection("rentRecords").updateMany(
             {
               propertyId: data.propertyId,
@@ -133,12 +189,12 @@ export default async function handler(req, res) {
             },
             { $set: { isElectricityMonth: data.isElectricityMonth } }
           );
-          console.log("Electricity bill received for month updated for records count: "+result.modifiedCount);
+          console.log("Electricity bill received for month updated for records count: " + result.modifiedCount);
           return res.json({ success: true });
         }
 
         case "INIT_RENT_RECORDS": {
-          console.log("Initializing rent records for current month..."+data.records.length);
+          console.log("Initializing rent records for current month..." + data.records.length);
           const result = await db.collection("rentRecords").insertMany(data.records);
           return res.json({ success: true, message: "Rent records initialization triggered" });
         }

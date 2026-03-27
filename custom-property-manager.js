@@ -1,4 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
+     checkAuth();
     showLoader();
     const periodPicker = document.getElementById('periodPicker');
 
@@ -9,6 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
     month = month < 10 ? '0' + month : month;
     periodPicker.value = `${year}-${month}`;
 });
+
 let clickCount = 0;
 document.querySelector('#headingMain').addEventListener('click', (e) => {
     clickCount++;
@@ -20,7 +22,19 @@ document.querySelector('#headingMain').addEventListener('click', (e) => {
 
 })
 
-loadPropertiesForAddTenant();
+async function checkAuth() {
+      try {
+        const res = await fetch("/api/checkAuth");
+
+        if (!res.ok) {
+          window.location.href = "/login.html";
+        }
+      } catch (err) {
+        window.location.href = "/login.html";
+      }
+      loadPropertiesForAddTenant();
+    }
+
 
 function togglePropertiesContainer() {
     const container = document.querySelector('.propertiesContainer');
