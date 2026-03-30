@@ -51,6 +51,15 @@ export default async function handler(req, res) {
               month: Number(month),
               year: Number(year),
               tenantActive: true
+            }, {
+              projection: {
+                tenantName: 1,
+                rentAmount: 1,
+                electricityBill: 1,
+                isElectricityMonth: 1,
+                month: 1,
+                year: 1
+              }
             })
             .toArray();
           console.log("Rent records found: " + rentRecords.length);
