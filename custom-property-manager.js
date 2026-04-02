@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-     checkAuth();
+    checkAuth();
     showLoader();
     const periodPicker = document.getElementById('periodPicker');
 
@@ -23,17 +23,17 @@ document.querySelector('#headingMain').addEventListener('click', (e) => {
 })
 
 async function checkAuth() {
-      try {
+    try {
         const res = await fetch("/api/checkAuth");
 
         if (!res.ok) {
-          window.location.href = "/login.html";
+            window.location.href = "/login.html";
         }
-      } catch (err) {
+    } catch (err) {
         window.location.href = "/login.html";
-      }
-      loadPropertiesForAddTenant();
     }
+    loadPropertiesForAddTenant();
+}
 
 
 function togglePropertiesContainer() {
@@ -230,7 +230,28 @@ async function onMonthSelected(value) {
                     <td><input data-type="rent" type="number" onblur="updateRentRecord('${p._id}', this)" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}; box-sizing: border-box;" value="${p.rentAmount}" /></td>
                     ${isElecMonth ? `<td><input data-type="electricity" type="number" value="${p.electricityBill}" onblur="updateRentRecord('${p._id}', this)"
                                                     style="background-color: ${p.electricityBill > 0 ? '#d4edda' : '#f8d7da'};box-sizing: border-box;"/>
-                                              </td>` : ""}
+                                                        <div style="margin-top:5px;">
+                <label>
+                    <input 
+                        type="radio" 
+                        name="elecStatus-${p._id}" 
+                        value="paid" 
+                        ${p.electricityPaid ? 'checked' : ''} 
+                        onchange="updateElectricityStatus('${p._id}', 'paid')"
+                    /> Paid
+                </label>
+
+                <label style="margin-left:10px;">
+                    <input 
+                        type="radio" 
+                        name="elecStatus-${p._id}" 
+                        value="unpaid" 
+                        ${!p.electricityPaid ? 'checked' : ''} 
+                        onchange="updateElectricityStatus('${p._id}', 'unpaid')"
+                    /> Unpaid
+                </label>
+            </div>
+                                                    </td>` : ""}
                     </tr>`;
                 });
             html += `<tr style="font-weight: bold; background-color: #f2f2f2;">
@@ -251,20 +272,26 @@ async function onMonthSelected(value) {
 async function updateRentRecord(id, element) {
     const tr = element.closest("tr");
     const rentAmountRecieved = tr.querySelector('input[data-type="rent"]').value;
-    const electricityAmount = tr.querySelector('input[data-type="electricity"]').value;
+    const electricityInput = tr.querySelector('input[data-type="electricity"]');
+    const electricityAmount = electricityInput ? electricityInput.value : undefined;
     const isrentReceived = Number(rentAmountRecieved) > 0;
+
+    const payload ={
+                id,
+                rentAmountRecieved,
+                rentReceived: isrentReceived
+                
+    };
+        if(electricityAmount !== undefined){
+        payload.electricityAmount = electricityAmount;
+    }
     showLoader();
     await fetch("/api/main", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             action: "UPDATE_RENT_RECORD",
-            data: {
-                id,
-                rentAmountRecieved,
-                rentReceived: isrentReceived,
-                electricityAmount
-            }
+            data: payload
         }),
     });
 

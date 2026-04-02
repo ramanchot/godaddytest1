@@ -179,10 +179,13 @@ export default async function handler(req, res) {
         }
 
         case "UPDATE_RENT_RECORD": {
+          const updateFields = { rentAmount: Number(data.rentAmountRecieved), rentReceived: data.rentReceived};
+          if(data.electricityAmount !== undefined){
+            updateFields.electricityBill = Number(data.electricityAmount);
+          }
           const result = await db.collection("rentRecords").updateOne(
             { _id: new ObjectId(data.id) },
-            { $set: { rentAmount: Number(data.rentAmountRecieved), rentReceived: data.rentReceived, electricityBill: Number(data.electricityAmount) } },
-
+            { $set: updateFields }
           );
 
           return res.json({ success: true });
