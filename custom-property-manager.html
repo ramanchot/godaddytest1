@@ -6,9 +6,9 @@
   <title>Custom Property Manager</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<h1 style="text-align: center;" id="headingMain">Property Manager</h1>
-<body>
 
+<body>
+  <h1 style="text-align: center;" id="headingMain">Property Manager</h1>
   <div class="container">
     <div class="adminControlContainer" style="display:none; gap:10px; flex-wrap:wrap;justify-content: center;">
     <button onclick="togglePropertiesContainer()" title="Hide/View Properties">🏠 Manage Properties</button>
@@ -60,9 +60,11 @@
       </table>
     </div>
   </div>
+  
   <div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
   </div>
   <script src="custom-property-manager.js"></script>
+  <div id="toastContainer"></div>
 </body>
 </html>

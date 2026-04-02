@@ -296,11 +296,12 @@ async function updateRentRecord(id, element) {
     });
 
     onMonthSelected(document.getElementById("periodPicker").value);
-    alert("Rent record updated");
+    showToast("Rent Record Saved successfully", "success");
+
 }
 
 async function initialiseRecords() {
-    console.log("========Initialising records for current month...=======");
+    console.log("========Initialising records for current month... ========");
     const [year, month] = document.getElementById("periodPicker").value.split("-");
 
     const tenants = await fetch("/api/main?action=GET_ACTIVE_TENANTS_LIST&propertyId=" + document.getElementById("propertySelectForTenant1").value).then(res => res.json());
@@ -359,4 +360,22 @@ async function setIselectrictyMonthTrue() {
             }
         }),
     })
+}
+
+function showToast(message, type = "default") {
+    const container = document.getElementById("toastContainer");
+
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.classList.add(type);
+    toast.innerText = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 10);
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
 }
