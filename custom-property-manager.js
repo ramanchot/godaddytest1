@@ -230,27 +230,6 @@ async function onMonthSelected(value) {
                     <td><input data-type="rent" type="number" onblur="updateRentRecord('${p._id}', this)" style="background-color: ${p.rentAmount > 0 ? 'green' : 'red'}; box-sizing: border-box;" value="${p.rentAmount}" /></td>
                     ${isElecMonth ? `<td><input data-type="electricity" type="number" value="${p.electricityBill}" onblur="updateRentRecord('${p._id}', this)"
                                                     style="background-color: ${p.electricityBill > 0 ? '#d4edda' : '#f8d7da'};box-sizing: border-box;"/>
-                                                        <div style="margin-top:5px;">
-                <label>
-                    <input 
-                        type="radio" 
-                        name="elecStatus-${p._id}" 
-                        value="paid" 
-                        ${p.electricityPaid ? 'checked' : ''} 
-                        onchange="updateElectricityStatus('${p._id}', 'paid')"
-                    /> Paid
-                </label>
-
-                <label style="margin-left:10px;">
-                    <input 
-                        type="radio" 
-                        name="elecStatus-${p._id}" 
-                        value="unpaid" 
-                        ${!p.electricityPaid ? 'checked' : ''} 
-                        onchange="updateElectricityStatus('${p._id}', 'unpaid')"
-                    /> Unpaid
-                </label>
-            </div>
                                                     </td>` : ""}
                     </tr>`;
                 });
