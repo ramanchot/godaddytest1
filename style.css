@@ -1,141 +1,166 @@
-/* General layout */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 10px;
-}
-
-.container {
-  max-width: 1200px;
-  margin: auto;
-}
-
-/* Buttons */
-button {
-  padding: 8px 12px;
-  margin: 5px 2px;
-  cursor: pointer;
-}
-
-/* Inputs */
-input, select {
-  padding: 6px;
-  margin: 5px 0;
-  width: 100%;
-  max-width: 300px;
-}
-
-#propertySelectForTenant1, #periodPicker {
-    width: auto;   /* adjust as needed */
-    padding: 6px;
-    border-radius: 5px;
-}
-
-/* Tables */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-th, td {
-  padding: 8px;
-  text-align: left;
-  word-break: break-word;
-}
-
-/* Make table scrollable on small screens */
-.rentRecordsContainer,
-.tenantsContainer,
-.propertiesContainer {
-  overflow-x: auto;
-}
-
-/* Spinner (keep yours) */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.spinner {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #3498db;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
-
-/* MOBILE VIEW */
-@media (max-width: 768px) {
-
-  h2 {
-    font-size: 16px;
+  /* General layout */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
   }
 
+  .container {
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  /* Buttons */
   button {
-    width: 100%;
+    padding: 8px 12px;
+    margin: 5px 2px;
+    cursor: pointer;
   }
 
+  /* Inputs */
   input, select {
+    padding: 6px;
+    margin: 5px 0;
     width: 100%;
-    max-width: 100%;
+    max-width: 300px;
   }
 
   #propertySelectForTenant1, #periodPicker {
-    width: auto;   /* adjust as needed */
-    padding: 6px;
-    border-radius: 5px;
-}
+      width: auto;   /* adjust as needed */
+      padding: 6px;
+      border-radius: 5px;
+  }
 
-  /* Make tables scroll horizontally */
+  /* Tables */
   table {
-    display: block;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    word-break: break-word;
+  }
+
+  /* Make table scrollable on small screens */
+  .rentRecordsContainer,
+  .tenantsContainer,
+  .propertiesContainer {
     overflow-x: auto;
-    white-space: nowrap;
   }
 
-  /* Stack header nicely */
-  .container > button {
-    width: 48%;
+  #rentRecordTable {
+      width: auto;
+      
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 700px;
+  }
+  .rentRecordsContainer > div {
+      display: flex;
+      align-items: center;
+      width: 250px; /* same width for both */
+      margin-bottom: 8px;
+      gap:10px;
+
+  }
+  .rentRecordsContainer select,
+  .rentRecordsContainer input {
+      flex: 1;
   }
 
+  .rentRecordsContainer label {
+    min-width: 100px;   /* controls space after label */
+    display: inline-block;
 }
 
-#toastContainer {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-}
+  /* Spinner (keep yours) */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
 
-.toast {
-  background: #111;
-  color: #fff;
-  padding: 10px 14px;
-  margin-top: 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
+  .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
 
-.toast.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-.toast.success { background: #16a34a; }
-.toast.error { background: #dc2626; }
+  @keyframes spin {
+    100% { transform: rotate(360deg); }
+  }
+
+  /* MOBILE VIEW */
+  @media (max-width: 768px) {
+
+    h2 {
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+    }
+
+    input, select {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    #propertySelectForTenant1, #periodPicker {
+      width: auto;   /* adjust as needed */
+      padding: 6px;
+      border-radius: 5px;
+  }
+
+    /* Make tables scroll horizontally */
+    table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    /* Stack header nicely */
+    .container > button {
+      width: 48%;
+    }
+
+  }
+
+  #toastContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+
+  .toast {
+    background: #111;
+    color: #fff;
+    padding: 10px 14px;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .toast.success { background: #16a34a; }
+  .toast.error { background: #dc2626; }
