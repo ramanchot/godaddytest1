@@ -25,6 +25,12 @@ input, select {
   max-width: 300px;
 }
 
+#propertySelectForTenant1, #periodPicker {
+    width: auto;   /* adjust as needed */
+    padding: 6px;
+    border-radius: 5px;
+}
+
 /* Tables */
 table {
   width: 100%;
@@ -87,6 +93,12 @@ th, td {
     width: 100%;
     max-width: 100%;
   }
+
+  #propertySelectForTenant1, #periodPicker {
+    width: auto;   /* adjust as needed */
+    padding: 6px;
+    border-radius: 5px;
+}
 
   /* Make tables scroll horizontally */
   table {
