@@ -190,6 +190,12 @@ async function loadTenants() {
     });
     const tenantsList = await tenants.json();
 
+    html+= `<tr>
+                <th>Tenant Name</th>
+                <th align="center">Actions</th>
+                <th>Status</th>
+            </tr>`;
+            
     if (tenantsList.length === 0) {
         document.getElementById("tenantsListBody").innerHTML = `<tr><td align="center" colspan="3">No tenants found for selected property</td></tr>`;
         return;
