@@ -34,9 +34,10 @@
 
     <div class="tenantsContainer" style="display: none;">
       <h2>Tenant</h2>
-      <input type="text" id="tenantName" placeholder="Tenant Name" />
+      <!-- <input type="text" id="tenantName" placeholder="Tenant Name" />
       <select id="propertySelectForTenant"></select>
-      <button onclick="addTenant()">Add New Tenant</button>
+      <button onclick="addTenant()">Add New Tenant</button> -->
+      <button onclick="openTenantModal()">+ Add Tenant</button>
       <button onclick="loadTenants()">Show All Tenants</button>
       <table id="tenantsList" border="1" width="100%">
         <thead>
@@ -72,5 +73,23 @@
   </div>
   <script src="custom-property-manager.js"></script>
   <div id="toastContainer"></div>
+  <div id="tenantModal" class="modal">
+  <div class="modal-content">
+    <h3>Add Tenant</h3>
+
+    <input type="text" id="tenantNameModal" placeholder="Tenant Name" />
+    <select id="propertySelectForTenantModal"></select>
+    <select id="tenantStatusSelect">
+      <option value="true">Tenant Status - Active</option>
+      <option value="false">Tenant Status - Inactive</option>
+    </select>
+
+
+    <div class="modal-actions">
+      <button onclick="closeTenantModal()">Cancel</button>
+      <button onclick="submitTenant()">Save</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

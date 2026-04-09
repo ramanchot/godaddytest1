@@ -16,16 +16,33 @@ window.addEventListener('DOMContentLoaded', async () => {
 }
 );
 
-let clickCount = 0;
-document.querySelector('#headingMain').addEventListener('click', (e) => {
-    clickCount++;
-    if (clickCount === 3) {
-        let toggle = document.querySelector('.adminControlContainer');
-        toggle.style.display = toggle.style.display === 'none' ? 'flex' : 'none';
-        clickCount = 0;
-    }
+window.addEventListener('DOMContentLoaded', async () => {
 
-})
+    let clickCount = 0;
+
+    document.querySelector('#headingMain').addEventListener('click', () => {
+        clickCount++;
+        if (clickCount === 3) {
+            let toggle = document.querySelector('.adminControlContainer');
+            toggle.style.display = toggle.style.display === 'none' ? 'flex' : 'none';
+            clickCount = 0;
+        }
+    });
+
+    showLoader();
+    try {
+        const periodPicker = document.getElementById('periodPicker');
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = String(now.getMonth() + 1).padStart(2, '0');
+        periodPicker.value = `${year}-${month}`;
+
+        await Promise.all([checkAuth(), loadPropertiesForAddTenant()]);
+        onMonthSelected(periodPicker.value);
+    } finally {
+        hideLoader();
+    }
+});
 
 async function checkAuth() {
     try {
@@ -60,10 +77,10 @@ async function loadPropertiesForAddTenant() {
     props.forEach(
         (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
     );
-    const select1 = document.getElementById("propertySelectForTenant");
+    //const select1 = document.getElementById("propertySelectForTenant");
     const select2 = document.getElementById("propertySelectForTenant1");
 
-    select1.innerHTML = html;
+    //select1.innerHTML = html;
     select2.innerHTML = html;
 
     if (select2.options.length > 1) {
@@ -117,6 +134,19 @@ async function addTenant() {
     document.getElementById("tenantName").value = "";
 }
 
+function openTenantModal() {
+    document.getElementById("tenantModal").style.display = "flex";
+
+    const modalSelect = document.getElementById("propertySelectForTenantModal");
+    const mainSelect = document.getElementById("propertySelectForTenant1");
+
+    modalSelect.innerHTML = mainSelect.innerHTML; // ✅ reuse existing data
+}
+
+function closeTenantModal() {
+    document.getElementById("tenantModal").style.display = "none";
+}
+
 /* Load Properties */
 async function loadProperties() {
     document.getElementById('propertiesList').style.display = 'table';
@@ -153,7 +183,7 @@ async function deleteProperty(propertyId) {
 
 /* Load Tenants */
 async function loadTenants() {
-    html = '';
+    let html = '';
     const tenants = await fetch("/api/main?action=GET_ALL_TENANTS_LIST&propertyId=" + document.getElementById("propertySelectForTenant").value, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -187,6 +217,27 @@ async function markTenantInactive(tenantId) {
     });
     alert("Tenant marked inactive");
     loadTenants();
+}
+
+async function submitTenant() {
+    const name = document.getElementById("tenantNameModal").value;
+    const propertyId = document.getElementById("propertySelectForTenantModal").value;
+    const isActive = document.getElementById("tenantStatusSelect").value === "true";
+
+    if (!name) return alert("Enter Tenant name");
+    if (!propertyId) return alert("Select property");
+
+    await fetch("/api/main", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: "ADD_TENANT",
+            data: { name, propertyId, isActive }
+        }),
+    });
+
+    closeTenantModal();
+    showToast("Tenant added successfully", "success");
 }
 
 async function onMonthSelected(value) {

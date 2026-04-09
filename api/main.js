@@ -163,7 +163,8 @@ export default async function handler(req, res) {
         case "ADD_TENANT": {
           const result = await db.collection("tenants").insertOne({
             propertyId: data.propertyId,
-            name: data.name
+            name: data.name,
+            isActive: data.isActive
           });
 
           return res.json({ success: true, id: result.insertedId });
