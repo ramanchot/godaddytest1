@@ -1,15 +1,20 @@
-window.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
+window.addEventListener('DOMContentLoaded', async () => {
     showLoader();
-    const periodPicker = document.getElementById('periodPicker');
+    try {
+        const periodPicker = document.getElementById('periodPicker');
+        const now = new Date();
+        const year = now.getFullYear();
+        let month = String(now.getMonth() + 1).padStart(2, '0');
+        periodPicker.value = `${year}-${month}`;
 
-    const now = new Date();
-    const year = now.getFullYear();
-    let month = now.getMonth() + 1; // Months are 0-based
-    // Ensure 2-digit month (e.g., 03 instead of 3)
-    month = month < 10 ? '0' + month : month;
-    periodPicker.value = `${year}-${month}`;
-});
+        await Promise.all([checkAuth(), loadPropertiesForAddTenant()]);
+        onMonthSelected(document.getElementById("periodPicker").value);
+    } finally {
+        hideLoader();
+    }
+
+}
+);
 
 let clickCount = 0;
 document.querySelector('#headingMain').addEventListener('click', (e) => {
@@ -32,7 +37,7 @@ async function checkAuth() {
     } catch (err) {
         window.location.href = "/login.html";
     }
-    loadPropertiesForAddTenant();
+    //loadPropertiesForAddTenant();
 }
 
 
@@ -55,16 +60,18 @@ async function loadPropertiesForAddTenant() {
     props.forEach(
         (p) => (html += `<option value='${p._id}'>${p.name}</option>`)
     );
-    document.getElementById("propertySelectForTenant").innerHTML = html;
-    const getdataselect = document.getElementById("propertySelectForTenant1");
-    getdataselect.innerHTML = html
+    const select1 = document.getElementById("propertySelectForTenant");
+    const select2 = document.getElementById("propertySelectForTenant1");
 
-    if (getdataselect.options.length > 1) {
-        getdataselect.selectedIndex = 1;
+    select1.innerHTML = html;
+    select2.innerHTML = html;
+
+    if (select2.options.length > 1) {
+        select2.value = select2.options[1].value;
     }
-    const rentRecordsContainer = document.querySelector('.rentRecordsContainer');
-    rentRecordsContainer.style.display = 'block';
-    onMonthSelected(document.getElementById("periodPicker").value);
+
+    document.querySelector('.rentRecordsContainer').style.display = 'block';
+    //onMonthSelected(document.getElementById("periodPicker").value);
 }
 
 /* Add Property */
