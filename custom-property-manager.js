@@ -184,7 +184,7 @@ async function deleteProperty(propertyId) {
 /* Load Tenants */
 async function loadTenants() {
     let html = '';
-    const tenants = await fetch("/api/main?action=GET_ALL_TENANTS_LIST&propertyId=" + document.getElementById("propertySelectForTenant").value, {
+    const tenants = await fetch("/api/main?action=GET_ALL_TENANTS_LIST", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
     });

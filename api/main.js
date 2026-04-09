@@ -71,7 +71,7 @@ export default async function handler(req, res) {
           console.log("Getting all tenants list for property..." + req.query.propertyId);
 
           const tenants = await db.collection("tenants")
-            .find({ propertyId: req.query.propertyId })
+            .find()
             .toArray();
 
           return res.json(tenants);
