@@ -363,10 +363,12 @@ async function initialiseRecords() {
             propertyId: tenant.propertyId,
             month: Number(month),
             year: Number(year),
+            tenantActive:true,
             rentAmount: 0,
             rentReceived: false,
             electricityBill: 0,
-            electricityPaid: false
+            electricityPaid: false,
+            isElectricityMonth: false
         });
     }
     await fetch("/api/main", {
