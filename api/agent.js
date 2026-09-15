@@ -183,12 +183,14 @@ Do not invent property names.
     // CALCULATE RENT SUMMARY
     // --------------------------------------------------
 
-    let rentDue = 0;
-    let rentReceived = 0;
-    let rentPending = 0;
+let rentDue = 0;
+let rentReceived = 0;
+let rentPending = 0;
 
-    let receivedCount = 0;
-    let pendingCount = 0;
+let receivedCount = 0;
+let pendingCount = 0;
+
+const pendingTenants = [];
 
 
     for (const record of records) {
@@ -205,10 +207,15 @@ Do not invent property names.
 
       } else {
 
-        rentPending += amount;
-        pendingCount++;
+      rentPending += amount;
+      pendingCount++;
 
-      }
+      pendingTenants.push({
+        tenantName: record.tenantName,
+        rentAmount: amount
+      });
+
+    }
 
     }
 
@@ -230,26 +237,28 @@ Do not invent property names.
 
     const verifiedData = {
 
-      property: property.name,
+  property: property.name,
 
-      month,
-      year,
+  month,
+  year,
 
-      activeTenants: records.length,
+  activeTenants: records.length,
 
-      rentDue,
+  rentDue,
 
-      rentReceived,
+  rentReceived,
 
-      rentPending,
+  rentPending,
 
-      paidTenants: receivedCount,
+  paidTenants: receivedCount,
 
-      pendingTenants: pendingCount,
+  pendingTenants: pendingCount,
 
-      collectionRate
+  collectionRate,
 
-    };
+  pendingTenantDetails: pendingTenants
+
+};
 
 
     console.log(
@@ -301,6 +310,10 @@ Use Indian Rupee formatting such as ₹12,500.
 You have READ-ONLY access.
 You cannot change anything in the database.
 
+If there are pending tenants, also show their names and rent amounts.
+
+If a tenant is marked pending but their rent amount is ₹0, explicitly mention that their status is pending but there is ₹0 rent pending for them.
+
 `,
 
       input: message
@@ -316,9 +329,7 @@ You cannot change anything in the database.
 
       answer: finalResponse.output_text,
 
-      // Keep this while testing.
-      // We can remove it once everything is confirmed.
-      verifiedData
+  
 
     });
 
