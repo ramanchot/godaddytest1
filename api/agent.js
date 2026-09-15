@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { MongoClient } from "mongodb";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPEN_API_KEY
 });
 
 const client = new MongoClient(process.env.MONGODB_URI);
