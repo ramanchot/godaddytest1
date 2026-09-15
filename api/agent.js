@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { MongoClient } from "mongodb";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPEN_API_KEY
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 const client = new MongoClient(process.env.MONGODB_URI);
@@ -26,233 +26,265 @@ export default async function handler(req, res) {
       });
     }
 
-    const client = await clientPromise;
-    const db = client.db("RamanDB");
-    
-    // --------------------------------------------------
-    // GET PROPERTIES
-    // --------------------------------------------------
-
-    async function getProperties() {
-
-      const properties = await db.collection("properties")
-        .find({})
-        .toArray();
-
-      return properties.map(property => ({
-        name: property.name,
-        id: property._id.toString()
-      }));
-    }
-
+    const db = (await clientPromise).db("RamanDB");
 
     // --------------------------------------------------
-    // GET RENT SUMMARY
+    // GET ALL PROPERTY NAMES
     // --------------------------------------------------
 
-    async function getRentSummary(propertyName, month, year) {
-
-      const property = await db.collection("properties").findOne({
-        name: {
-          $regex: `^${propertyName.trim()}$`,
-          $options: "i"
+    const properties = await db.collection("properties")
+      .find({}, {
+        projection: {
+          name: 1
         }
+      })
+      .toArray();
+
+
+    const propertyNames = properties
+      .map(p => p.name)
+      .filter(Boolean);
+
+
+    // --------------------------------------------------
+    // ASK AI TO IDENTIFY PROPERTY / MONTH / YEAR
+    // --------------------------------------------------
+
+    const extractionResponse = await openai.responses.create({
+
+      model: "gpt-5.6-luna",
+
+      instructions: `
+You extract information from rent-management questions.
+
+Available property names:
+
+${propertyNames.join(", ")}
+
+From the user's question, identify:
+
+- propertyName
+- month number
+- year
+
+Return ONLY valid JSON in this exact format:
+
+{
+  "propertyName": "A94",
+  "month": 9,
+  "year": 2026
+}
+
+If the property, month, or year cannot be determined, use null.
+
+Do not calculate anything.
+Do not invent property names.
+`,
+
+      input: message
+
+    });
+
+
+    let extracted;
+
+    try {
+
+      extracted = JSON.parse(
+        extractionResponse.output_text
+          .replace(/```json/g, "")
+          .replace(/```/g, "")
+          .trim()
+      );
+
+    } catch {
+
+      return res.status(200).json({
+        answer:
+          "I couldn't determine the property, month, or year from your question. Please specify them."
       });
 
-      if (!property) {
-        return {
-          error: `Property "${propertyName}" was not found.`
-        };
-      }
-
-      const propertyId = property._id.toString();
-
-      const records = await db.collection("rentRecords")
-        .find({
-          propertyId,
-          month: Number(month),
-          year: Number(year),
-          tenantActive: true
-        })
-        .toArray();
+    }
 
 
-      // Calculate totals HERE on the server
-
-      let rentDue = 0;
-      let rentReceived = 0;
-      let rentPending = 0;
-
-      let receivedCount = 0;
-      let pendingCount = 0;
+    const propertyName = extracted.propertyName;
+    const month = Number(extracted.month);
+    const year = Number(extracted.year);
 
 
-      for (const record of records) {
+    // --------------------------------------------------
+    // VALIDATE INPUT
+    // --------------------------------------------------
 
-        const amount = Number(record.rentAmount || 0);
+    if (
+      !propertyName ||
+      !month ||
+      !year ||
+      month < 1 ||
+      month > 12
+    ) {
 
-        rentDue += amount;
-
-        if (record.rentReceived === true) {
-
-          rentReceived += amount;
-          receivedCount++;
-
-        } else {
-
-          rentPending += amount;
-          pendingCount++;
-
-        }
-
-      }
-
-
-      const collectionRate =
-        rentDue > 0
-          ? Number(((rentReceived / rentDue) * 100).toFixed(2))
-          : 0;
-
-
-      return {
-
-        propertyName: property.name,
-
-        month: Number(month),
-
-        year: Number(year),
-
-        activeTenants: records.length,
-
-        rentDue,
-
-        rentReceived,
-
-        rentPending,
-
-        receivedCount,
-
-        pendingCount,
-
-        collectionRate
-
-      };
+      return res.status(200).json({
+        answer:
+          "Please specify the property, month and year. For example: \"Give me the rent summary for A94 for September 2026.\""
+      });
 
     }
 
 
     // --------------------------------------------------
-    // AI TOOLS
+    // FIND PROPERTY
     // --------------------------------------------------
 
-    const tools = [
+    const property = await db.collection("properties").findOne({
 
-      {
-        type: "function",
+      name: {
+        $regex: `^${propertyName.trim()}$`,
+        $options: "i"
+      }
 
-        name: "get_properties",
-
-        description:
-          "Get the list of properties available in the property management system.",
-
-        parameters: {
-
-          type: "object",
-
-          properties: {},
-
-          additionalProperties: false
-
-        }
-
-      },
+    });
 
 
-      {
+    if (!property) {
 
-        type: "function",
+      return res.status(200).json({
 
-        name: "get_rent_summary",
+        answer:
+          `I couldn't find a property named "${propertyName}".`
 
-        description:
-          "Get the calculated rent summary for a property and month. This is read-only.",
+      });
 
-        parameters: {
+    }
 
-          type: "object",
 
-          properties: {
+    const propertyId = property._id.toString();
 
-            propertyName: {
 
-              type: "string",
+    // --------------------------------------------------
+    // GET ACTIVE RENT RECORDS
+    // --------------------------------------------------
 
-              description:
-                "Property name such as A94"
+    const records = await db.collection("rentRecords")
 
-            },
+      .find({
 
-            month: {
+        propertyId,
+        month,
+        year,
+        tenantActive: true
 
-              type: "integer",
+      })
 
-              description:
-                "Month number from 1 to 12"
+      .toArray();
 
-            },
 
-            year: {
+    // --------------------------------------------------
+    // CALCULATE RENT SUMMARY
+    // --------------------------------------------------
 
-              type: "integer",
+    let rentDue = 0;
+    let rentReceived = 0;
+    let rentPending = 0;
 
-              description:
-                "Four digit year"
+    let receivedCount = 0;
+    let pendingCount = 0;
 
-            }
 
-          },
+    for (const record of records) {
 
-          required: [
-            "propertyName",
-            "month",
-            "year"
-          ],
+      const amount = Number(record.rentAmount || 0);
 
-          additionalProperties: false
+      rentDue += amount;
 
-        }
+
+      if (record.rentReceived === true) {
+
+        rentReceived += amount;
+        receivedCount++;
+
+      } else {
+
+        rentPending += amount;
+        pendingCount++;
 
       }
 
-    ];
+    }
+
+
+    const collectionRate =
+
+      rentDue > 0
+
+        ? Number(
+            ((rentReceived / rentDue) * 100).toFixed(2)
+          )
+
+        : 0;
 
 
     // --------------------------------------------------
-    // AI INSTRUCTIONS
+    // VERIFIED DATA
     // --------------------------------------------------
 
-    const instructions = `
+    const verifiedData = {
 
-You are the Rent Assistant for a property management system.
+      property: property.name,
 
-You have READ-ONLY access to rent information.
+      month,
+      year,
 
-You cannot modify the database.
+      activeTenants: records.length,
 
-You cannot add, delete, update, mark or change anything.
+      rentDue,
 
-IMPORTANT:
+      rentReceived,
 
-When the user asks about rent:
+      rentPending,
 
-1. Identify the property.
-2. Identify the month and year.
-3. Call get_rent_summary.
-4. Use the returned numbers exactly.
-5. NEVER invent numbers.
-6. NEVER omit the actual amounts from a rent summary.
+      paidTenants: receivedCount,
 
-When displaying a rent summary, ALWAYS show:
+      pendingTenants: pendingCount,
+
+      collectionRate
+
+    };
+
+
+    console.log(
+      "Verified rent data:",
+      JSON.stringify(verifiedData)
+    );
+
+
+    // --------------------------------------------------
+    // ASK AI TO PRESENT VERIFIED DATA
+    // --------------------------------------------------
+
+    const finalResponse = await openai.responses.create({
+
+      model: "gpt-5.6-luna",
+
+      instructions: `
+
+You are a rent management assistant.
+
+The following information has been calculated directly from the database:
+
+${JSON.stringify(verifiedData)}
+
+This data is VERIFIED.
+
+You MUST use these exact numbers.
+
+Do NOT calculate different numbers.
+Do NOT invent numbers.
+Do NOT omit the amounts.
+
+Answer the user's question clearly.
+
+For a rent summary, show:
 
 Property
 Month
@@ -264,133 +296,16 @@ Paid tenants
 Pending tenants
 Collection rate
 
-Use Indian Rupee formatting.
+Use Indian Rupee formatting such as ₹12,500.
 
-For example:
+You have READ-ONLY access.
+You cannot change anything in the database.
 
-A94 — September 2026
+`,
 
-Active tenants: 10
-Rent due: ₹125,000
-Rent received: ₹100,000
-Rent pending: ₹25,000
-
-Paid tenants: 8
-Pending tenants: 2
-
-Collection rate: 80%
-
-Property names should be used instead of MongoDB IDs.
-
-If the user doesn't provide a month/year and it is required, ask them for it.
-
-`;
-
-
-    // --------------------------------------------------
-    // FIRST AI REQUEST
-    // --------------------------------------------------
-
-    let response = await openai.responses.create({
-
-      model: "gpt-5.6-luna",
-
-      instructions,
-
-      input: message,
-
-      tools
+      input: message
 
     });
-
-
-    // --------------------------------------------------
-    // HANDLE TOOL CALLS
-    // --------------------------------------------------
-
-    while (true) {
-
-      const toolCalls = response.output.filter(
-        item => item.type === "function_call"
-      );
-
-
-      if (toolCalls.length === 0) {
-        break;
-      }
-
-
-      const toolOutputs = [];
-
-
-      for (const toolCall of toolCalls) {
-
-        const args = JSON.parse(toolCall.arguments);
-
-        let result;
-
-
-        if (toolCall.name === "get_properties") {
-
-          result = await getProperties();
-
-        }
-
-
-        else if (toolCall.name === "get_rent_summary") {
-
-          result = await getRentSummary(
-
-            args.propertyName,
-
-            args.month,
-
-            args.year
-
-          );
-
-        }
-
-
-        else {
-
-          result = {
-            error: "Unknown tool"
-          };
-
-        }
-
-
-        toolOutputs.push({
-
-          type: "function_call_output",
-
-          call_id: toolCall.call_id,
-
-          output: JSON.stringify(result)
-
-        });
-
-      }
-
-
-      // Send calculated database result back to AI
-
-      response = await openai.responses.create({
-
-        model: "gpt-5.6-luna",
-
-        instructions,
-
-        previous_response_id: response.id,
-
-        input: toolOutputs,
-
-        tools
-
-      });
-
-    }
 
 
     // --------------------------------------------------
@@ -399,14 +314,16 @@ If the user doesn't provide a month/year and it is required, ask them for it.
 
     return res.status(200).json({
 
-      answer: response.output_text
+      answer: finalResponse.output_text,
+
+      // Keep this while testing.
+      // We can remove it once everything is confirmed.
+      verifiedData
 
     });
 
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error("Agent error:", error);
 
