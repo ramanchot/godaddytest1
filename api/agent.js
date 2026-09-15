@@ -28,7 +28,19 @@ export default async function handler(req, res) {
 
     const client = await clientPromise;
     const db = client.db("RamanDB");
+    const testRecords = await db.collection("rentRecords")
+  .find({
+    propertyId: "692033a92f3bb2bcbfa56122",
+    month: 9,
+    year: 2026,
+    tenantActive: true
+  })
+  .toArray();
 
+return res.status(200).json({
+  count: testRecords.length,
+  records: testRecords
+});
     // --------------------------------------------------
     // GET PROPERTIES
     // --------------------------------------------------
